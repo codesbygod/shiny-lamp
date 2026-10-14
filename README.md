@@ -293,42 +293,45 @@ timeout — lives in the console under Settings instead.
 
 ## The brand
 
-**Rockfeild National Bank.** The palette, the type and the shapes all come from
-the logo:
-
-| | |
-|---|---|
-| Navy `#0b1f44` | the wordmark; headings, the sidebar, the footer, the hero |
-| Emerald `#0a7d57` | the R's bowl and leg; every primary button |
-| Mint `#8edcb4` | the band across the R; the "you are here" marker, rules on navy, the one call to action on a dark ground |
-| Montserrat | the wordmark's face; headlines and headline figures |
-| Plus Jakarta Sans | everything read in sentences or scanned in tables |
-
-The R's diagonal band, pitched at about thirty degrees, is the recurring
-shape: the cut on the hero and heritage photographs, the stripes behind the
-navy panels and the sign-in page. Tokens live at the top of
-`public/css/bank.css` (`--rf-navy`, `--rf-emerald`, `--rf-mint`, ...).
+**Rockfeild National Bank.** The site follows the Standard design: navy
+`#002445` and white, Playfair Display for what is said and wide-spaced Jost
+capitals for what labels it, a hairline rule under each heading, nearly square
+corners, and slow, quiet motion. Online banking and the staff console keep
+their lighter, rounder look in white and blue (Plus Jakarta Sans). Tokens live
+in `public/css/bank.css`.
 
 ### The logo
 
-The logo lives once, as geometry, in `src/bank/site/logo.js`: the folded R
-(sheared stem, emerald bowl and leg, mint band with the shadow where it folds)
-drawn in the supplied artwork's own 1344 x 576 coordinates, so it can be
-checked against it point for point, and the wordmark set in Montserrat.
-`npm run build:brand` writes everything derived from it:
+ROCKFEILD in a roman serif, NATIONAL BANK spaced wide beneath it, and a drawn
+key under both, always on its own navy (or in navy on paper). The monogram is
+the R from the wordmark. Everything is set in `src/bank/site/logo.js` with the
+site's own Playfair Display and Jost, and `npm run build:brand` renders:
 
 | Output | What it is |
 |---|---|
-| `assets/bank/logo-dark.png` | the full lockup, navy wordmark, for white and paper |
-| `assets/bank/logo-light.png` | the same with a white wordmark, for navy panels |
-| `assets/bank/logomark-{dark,light}.png` | the R alone; the light one lifts the darkest greens for navy |
-| `assets/bank/mark-{dark,light}.svg` | the R as a vector, for print and email |
-| `favicon.ico` (16, 32, 48) | the bare R, as large as the square allows |
-| `favicon.png`, `icon-512.png`, `apple-touch-icon.png` | the R on a white tile |
-| `assets/bank/og-image.png` | the link card, 1200×630 |
+| `assets/bank/logo-light.png` | the lockup in white, for navy grounds (nav, footer, sign-in, closing band) |
+| `assets/bank/logo-dark.png` | the same in navy, for paper |
+| `assets/bank/logomark-{light,dark}.png` | the R alone |
+| `favicon.ico`, `favicon.png`, `icon-512.png`, `apple-touch-icon.png` | a white R on the navy |
+| `assets/bank/og-image.png` | the link card: the lockup on its navy, 1200×630 |
 
 It needs `playwright-core` to rasterise and is not part of `npm run build`: the
-outputs are committed. Edit the geometry, run it again, and every size follows.
+outputs are committed.
+
+### Motion
+
+`public/js/motion.js` (public pages) and `public/js/bank/app-motion.js`
+(online banking and sign-in) add: a reading bar along the top of the page; a
+nav that slims and takes a shadow once the page scrolls; a hero that drifts
+behind the copy and rises in line by line, its features one after another;
+section content that rises into view, headings drawing their rule as they
+arrive; figures that count up; product cards whose top rule draws across; a
+phone and card that float and lean towards the pointer; a light band across
+buttons on hover; icons that fill under the pointer; footer links that
+underline; a chat button that breathes until noticed; the live price strip
+under the nav, with prices that flash when they move; and, in online banking,
+blocks that rise in once the session is confirmed and a dashboard total that
+counts up. All of it stops for visitors who ask for reduced motion.
 
 ### Photographs
 
@@ -336,7 +339,8 @@ The site's photographs are the same files as the Hedgestone build, renamed
 `rockfeild*`. The two lobby shots (`rockfeild.png`, `rockfeildhero.png`, and
 `rockfeild0.png`, which is the same picture) had the old bank's name on the
 wall behind the desk; only that sign has been repainted, with the Rockfeild
-logo. `public/assets/img/README.md` says which file goes where.
+key logo. `/digital` now redirects to the home page, which carries that
+section. `public/assets/img/README.md` says which file goes where.
 
 ---
 

@@ -55,7 +55,7 @@ function head({ title, description, noindex = false, styles = [] }) {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${title}</title>
   <meta name="description" content="${description}" />${noindex ? '\n  <meta name="robots" content="noindex, nofollow" />' : ''}
-  <meta name="theme-color" content="#0b1f44" />
+  <meta name="theme-color" content="#002445" />
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
   <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -72,7 +72,7 @@ function nav(active = '') {
   return `
   <header class="nav" id="nav">
     <a class="brand" href="/" aria-label="Rockfeild National Bank home">
-      <img class="brand-logo" src="/assets/bank/logo-dark.png" alt="Rockfeild National Bank" width="240" height="54" />
+      <img class="brand-logo" src="/assets/bank/logo-dark.png" alt="Rockfeild National Bank" width="754" height="279" />
     </a>
     <nav class="nav-links" id="navlinks">
       ${link('/personal', 'Personal', 'services')}
@@ -93,7 +93,7 @@ function footer() {
   <footer class="footer">
     <div class="wrap footer-top">
       <div class="footer-brand">
-        <img class="brand-logo footer-logo" src="/assets/bank/logo-dark.png" alt="Rockfeild National Bank" width="240" height="54" />
+        <img class="brand-logo footer-logo" src="/assets/bank/logo-light.png" alt="Rockfeild National Bank" width="754" height="279" style="width:240px" />
         <p>Personal and business banking since 1924. Member FDIC.</p>
       </div>
       <div class="col">

@@ -1,61 +1,150 @@
-/* Rockfeild National - scroll reveals for the marketing pages.
-   Marks section content to rise in as it scrolls into view. Nothing is hidden
-   until this script has run, and nothing moves for visitors who ask for
-   reduced motion. */
+/* ==========================================================================
+   Motion for the public site.
+
+   Everything here is decoration on top of pages that already work without it:
+   with JavaScript off, or with reduced motion asked for, every element is
+   simply where it belongs and every figure reads its real value.
+
+   - Section content rises into place as it scrolls into view (the reveal
+     machinery itself is ROCKFEILD.observeReveals in main.js; this file only
+     decides what takes part).
+   - Figures count up from zero the first time they are seen.
+   - The nav takes a shadow once the page moves under it, and slims down.
+   - The hero photograph drifts a little slower than the page.
+   - A thin bar along the top fills as the page is read.
+   - The phone and card on the home page lean towards the pointer.
+   ========================================================================== */
 (function () {
   'use strict';
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (!('IntersectionObserver' in window)) return;
 
-  var targets = document.querySelectorAll(
-    '.rf-section .rf-eyebrow, .rf-section h2, .rf-section .section-lede, ' +
-    '.rf-section .rf-grid > *, .rf-section .rf-card, .rf-section img'
-  );
-  if (!targets.length) return;
+  const RF = window.ROCKFEILD;
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var seen = new Set();
-  targets.forEach(function (el) {
-    if (seen.has(el) || el.closest('.hs-home')) return;
-    seen.add(el);
-    el.setAttribute('data-hs-reveal', '');
+  /* ---- the nav: glass once scrolled; the reading bar ---- */
+  const nav = document.querySelector('.rf-marketing-nav');
+  let progress = null;
+  if (!reduceMotion) {
+    progress = document.createElement('div');
+    progress.className = 'rf-progress';
+    progress.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(progress);
+  }
+  const hero = document.querySelector('.rf-hero');
+  const heroPhoto = hero && hero.querySelector('.rf-hero-photo');
+  let ticking = false;
+  function frame() {
+    ticking = false;
+    const y = window.scrollY || 0;
+    if (nav) nav.classList.toggle('is-scrolled', y > 8);
+    if (progress) {
+      const room = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.setProperty('--rf-progress', room > 0 ? Math.min(1, y / room).toFixed(4) : '0');
+    }
+    if (heroPhoto && !reduceMotion && y < window.innerHeight * 1.2) {
+      heroPhoto.style.translate = `0 ${(y * 0.18).toFixed(1)}px`;
+    }
+  }
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(frame);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  frame();
+
+  if (reduceMotion) return;
+  document.documentElement.classList.add('rf-motion');
+
+  /* ---- reveals ---- */
+  const TARGETS = [
+    '.rf-section .rf-eyebrow', '.rf-section h2', '.rf-section .section-lede',
+    '.rf-section .rf-grid > *', '.rf-section blockquote', '.rf-section .rf-card',
+    '.rf-section table', '.rf-section form', '.rf-cta .wrap > *', '.rf-trust-row > *',
+  ].join(',');
+  $$(TARGETS).forEach((el) => {
+    // One reveal per branch: a card inside a revealing grid cell rides along
+    // with its cell rather than arriving a second time.
+    if (el.parentElement && el.parentElement.closest('[data-reveal]')) return;
+    el.setAttribute('data-reveal', '');
   });
-  document.documentElement.classList.add('hs-motion');
+  if (RF && RF.observeReveals) RF.observeReveals();
 
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      var el = e.target;
-      var parent = el.parentElement;
-      var peers = parent ? Array.prototype.filter.call(parent.children, function (c) { return c.hasAttribute('data-hs-reveal'); }) : [];
-      var step = Math.max(0, Math.min(peers.indexOf(el), 5));
-      el.style.setProperty('--hs-delay', (step * 90) + 'ms');
-      el.classList.add('is-in');
-      io.unobserve(el);
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+  /* ---- count-up figures ----
+     Only the first text node holding a number moves, so "4.35% APY" keeps
+     its <small> and "$25.00" keeps its dollar sign. Values with a slash
+     ("24 / 7") are left alone: they are not quantities. */
+  const FIGURES = '.rf-hero-stats .v, .rf-trust .v, .rf-phone-balance, .rf-stat .v, .rf-product .rate, .rf-amt';
+  const NUMBER = /^(\D*?)(\d{1,3}(?:,\d{3})+|\d+)(\.\d+)?(.*)$/;
 
-  seen.forEach(function (el) { io.observe(el); });
+  function firstNumberNode(el) {
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walk.nextNode())) if (/\d/.test(node.nodeValue)) return node;
+    return null;
+  }
 
-  // The photo band settles from a slight zoom as it arrives.
-  var bands = document.querySelectorAll('.hs-band');
-  var bandIo = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) { e.target.classList.add('is-in'); bandIo.unobserve(e.target); }
-    });
-  }, { threshold: 0.2 });
-  bands.forEach(function (b) { bandIo.observe(b); });
-
-  // Figures count up from zero to the number already printed in the page.
-  document.querySelectorAll('[data-hs-count]').forEach(function (el) {
-    var target = Number(el.getAttribute('data-hs-count')) || 0;
-    var start = null;
-    var fmt = function (n) { return Math.round(n).toLocaleString('en-US'); };
-    var tick = function (t) {
-      if (start === null) start = t;
-      var k = Math.min((t - start) / 1400, 1);
-      el.textContent = fmt(target * (1 - Math.pow(1 - k, 3)));
-      if (k < 1) requestAnimationFrame(tick);
+  function countUp(node) {
+    const text = node.nodeValue;
+    if (text.includes('/')) return;
+    const m = text.trim().match(NUMBER);
+    if (!m) return;
+    const [, prefix, whole, frac = '', suffix] = m;
+    const lead = text.slice(0, text.indexOf(text.trim()));
+    const decimals = frac ? frac.length - 1 : 0;
+    const target = parseFloat(whole.replace(/,/g, '') + frac);
+    const commas = whole.includes(',');
+    const fmt = (v) => {
+      const s = v.toFixed(decimals);
+      if (!commas) return s;
+      const [w, f] = s.split('.');
+      return w.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (f ? '.' + f : '');
     };
-    setTimeout(function () { requestAnimationFrame(tick); }, 700);
-  });
+    const start = performance.now();
+    const DURATION = 1400;
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / DURATION);
+      const eased = 1 - Math.pow(1 - t, 4);
+      node.nodeValue = lead + prefix + fmt(target * eased) + suffix;
+      if (t < 1) requestAnimationFrame(step);
+      else node.nodeValue = text;
+    };
+    requestAnimationFrame(step);
+  }
+
+  /* ---- the phone stage leans towards the pointer ----
+     Only for a real pointer: on a touch screen there is nothing to follow. */
+  const stage = document.querySelector('.rf-device-stage');
+  if (stage && window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    let raf = 0;
+    stage.addEventListener('pointermove', (e) => {
+      const r = stage.getBoundingClientRect();
+      const tx = ((e.clientX - r.left) / r.width) * 2 - 1;
+      const ty = ((e.clientY - r.top) / r.height) * 2 - 1;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        stage.style.setProperty('--tx', tx.toFixed(3));
+        stage.style.setProperty('--ty', ty.toFixed(3));
+        stage.classList.add('is-tilting');
+      });
+    });
+    stage.addEventListener('pointerleave', () => {
+      cancelAnimationFrame(raf);
+      stage.style.setProperty('--tx', '0');
+      stage.style.setProperty('--ty', '0');
+    });
+  }
+
+  if ('IntersectionObserver' in window) {
+    const seen = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        seen.unobserve(e.target);
+        const node = firstNumberNode(e.target);
+        if (node) countUp(node);
+      });
+    }, { threshold: 0.4 });
+    $$(FIGURES).forEach((el) => seen.observe(el));
+  }
+
 })();

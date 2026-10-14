@@ -2,8 +2,8 @@
    Rockfeild National Bank - the site template's base layer.
    Now only the client services desk at /admin is built on it (with
    admin.css on top); the bank's own pages use bank.css. Its tokens follow
-   the bank's palette so the desk reads as the same institution: a cool
-   white ground, navy ink, emerald and mint from the logo.
+   the bank's palette so the desk reads as the same institution: white
+   ground, navy ink, Playfair Display for headings and Jost for the rest.
    ========================================================================= */
 
 :root {
@@ -16,15 +16,15 @@
   --bg:        rgb(var(--bg-rgb));
   --bg-2:      #f9fafb;
   --panel:     #ffffff;
-  --panel-2:   #e2f5eb;
-  --ink:       #0f1d3a;
-  --ink-soft:  #3a4862;
-  --muted:     #5a6679;
-  --faint:     #9aa3b3;
-  --line:      rgba(11, 31, 68, 0.14);
-  --line-2:    rgba(11, 31, 68, 0.08);
-  --accent:    #0a7d57;
-  --accent-2:  #0a6e4d;
+  --panel-2:   #eef1f5;
+  --ink:       #0d1b2e;
+  --ink-soft:  #3b4a5e;
+  --muted:     #66768c;
+  --faint:     #98a5b7;
+  --line:      rgba(0, 36, 69, 0.14);
+  --line-2:    rgba(0, 36, 69, 0.08);
+  --accent:    #002445;
+  --accent-2:  #1d4f86;
   --accent-ink:#ffffff;
 
   /* The glass pane. Used by the ghost button and the nav control, so the two
@@ -40,8 +40,8 @@
   --on-image:  #ffffff;
   --shade:     rgba(10, 12, 16, 0.55);
 
-  --font-display: "Montserrat", "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-body: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Jost", system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
 
   --maxw: 1280px;
@@ -1694,11 +1694,11 @@ main { background: #102534 !important; }
 /* Reference-led editorial construction system. Keep images contained and copy on
    surfaces with known contrast instead of placing black text over photography. */
 :root {
-  --editorial-ink: #0f1d3a;
-  --editorial-paper: #f4f6f8;
-  --editorial-muted: #5a6679;
-  --editorial-orange: #0a6e4d;
-  --editorial-yellow: #8edcb4;
+  --editorial-ink: #0d1b2e;
+  --editorial-paper: #f4f6f9;
+  --editorial-muted: #66768c;
+  --editorial-orange: #1d4f86;
+  --editorial-yellow: #a9b9cf;
 }
 body, main { background: var(--editorial-paper) !important; color: var(--editorial-ink); }
 .hero { color: #f7f4ec !important; }

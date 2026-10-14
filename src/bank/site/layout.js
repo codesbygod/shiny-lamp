@@ -182,15 +182,17 @@ const icon = (name, size = 18) => {
  */
 const GATE = `<script>(function(){var d=document.documentElement;if(!/(?:^|;\\s*)rf_csrf=/.test(document.cookie)){d.className+=' rf-gone';location.replace('/signin?next='+encodeURIComponent(location.pathname+location.search));return;}d.className+=' rf-booting';})();</script>`;
 
-function head({ title, description, noindex = false, styles = [], bodyClass }) {
+function head({ title, description, noindex = false, styles = [], bodyClass, theme }) {
+  // The public site and the sign-in pages are always light; the signed-in
+  // application follows the device.
   return `<!doctype html>
-<html lang="en">
+<html lang="en"${theme ? ` data-rf-theme="${theme}"` : ''}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${title}</title>
   <meta name="description" content="${description}" />${noindex ? '\n  <meta name="robots" content="noindex, nofollow" />' : ''}
-  <meta name="theme-color" content="#0b1f44" />
+  <meta name="theme-color" content="#002445" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="${BANK.name}" />
   <meta property="og:title" content="${title}" />
@@ -308,7 +310,7 @@ function sidebar(active, staff = false) {
     return `
     <aside class="rf-side is-staff" id="rf-side">
       <div class="rf-side-brand">
-        <img class="rf-mark" src="/assets/bank/logomark-light.png" alt="" width="28" height="28" />
+        <img class="rf-mark" src="/assets/bank/logomark-dark.png" alt="" width="26" height="28" />
         <span>
           <strong data-bank-short>${BANK.shortName}</strong>
           <small>Staff console</small>
@@ -335,7 +337,7 @@ function legacySidebar(groups) {
   return `
     <aside class="rf-side" id="rf-side">
       <div class="rf-side-brand">
-        <img class="rf-mark" src="/assets/bank/logomark-light.png" alt="" width="28" height="28" />
+        <img class="rf-mark" src="/assets/bank/logomark-dark.png" alt="" width="26" height="28" />
         <span>
           <strong data-bank-short>${BANK.shortName}</strong>
           <small>Online banking</small>
@@ -407,7 +409,7 @@ function tabbar(active, staff = false) {
  */
 function appPage({ title, description, heading, sub, active, content, extraScripts = [], actions = '', wide = false, staff = false }) {
   return [
-    head({ title, description, noindex: true, bodyClass: 'rf-app' }),
+    head({ title, description, noindex: true, bodyClass: 'rf-app', theme: 'light' }),
     `  <div class="rf-shell${staff ? ' is-staff' : ''}">`,
     sidebar(active, staff),
     `    <div class="rf-main">
@@ -432,18 +434,25 @@ ${tabbar(active, staff)}
     </div>
   </div>
   <div class="rf-toasts" id="rf-toasts"></div>`,
-    scripts(['/js/bankname.js', '/js/bank/core.js', '/js/asset-logos.js', '/js/assets.js', '/js/ticker.js', ...extraScripts]),
+    scripts(['/js/bankname.js', '/js/bank/core.js', '/js/asset-logos.js', '/js/assets.js', '/js/ticker.js', '/js/bank/app-motion.js', ...extraScripts]),
   ].join('\n');
 }
 
 /** The sign-in shell: a panel on the right, the bank's case on the left. */
+const ticker = () => `
+  <div class="hs-ticker" data-hs-ticker hidden role="region" aria-label="Live market prices">
+    <span class="hs-ticker-live"><i></i>Live</span>
+    <div class="hs-ticker-window"><div class="hs-ticker-track" data-hs-ticker-track></div></div>
+    <a class="hs-ticker-cta" href="/invest">Convert &rarr;</a>
+  </div>`;
+
 function authPage({ title, description, content, extraScripts = [] }) {
   return [
-    head({ title, description, noindex: true, bodyClass: 'rf-auth' }),
+    head({ title, description, noindex: true, bodyClass: 'rf-auth', theme: 'light' }),
     `  <div class="rf-auth-wrap">
     <section class="rf-auth-aside">
       <a class="brandline" href="/" aria-label="${BANK.name} home">
-        <img class="rf-lockup" src="/assets/bank/logo-light.png" alt="${BANK.name}" width="240" height="54" />
+        <img class="rf-lockup" src="/assets/bank/logo-light.png" alt="${BANK.name}" width="754" height="279" style="width:240px" />
       </a>
       <h2>Your money, held the way a bank should hold it.</h2>
       <p>${BANK.tagline} Deposits insured by the FDIC to the maximum permitted by law, and a real person on the phone when you need one.</p>
@@ -461,7 +470,7 @@ function authPage({ title, description, content, extraScripts = [] }) {
     </section>
     <section class="rf-auth-panel">
       <a class="rf-auth-brand" href="/" aria-label="${BANK.name} home">
-        <img src="/assets/bank/logomark-dark.png" alt="" width="28" height="28" />
+        <img src="/assets/bank/logomark-light.png" alt="" width="26" height="28" />
         <span>
           <strong>${BANK.name}</strong>
           <small>Online banking</small>
@@ -471,20 +480,9 @@ ${content}
     </section>
   </div>
   <div class="rf-toasts" id="rf-toasts"></div>`,
-    scripts(['/js/bankname.js', '/js/bank/core.js', ...extraScripts]),
+    scripts(['/js/bankname.js', '/js/bank/core.js', '/js/bank/app-motion.js', ...extraScripts]),
   ].join('\n');
 }
-
-/**
- * The live price strip under the nav. Empty until /js/ticker.js fills it from
- * /api/bank/markets, and it stays hidden if no price can be had.
- */
-const ticker = () => `
-  <div class="hs-ticker" data-hs-ticker hidden role="region" aria-label="Live market prices">
-    <span class="hs-ticker-live"><i></i>Live</span>
-    <div class="hs-ticker-window"><div class="hs-ticker-track" data-hs-ticker-track></div></div>
-    <a class="hs-ticker-cta" href="/invest">Convert &rarr;</a>
-  </div>`;
 
 /* -------------------------------------------------------- marketing bits --- */
 
@@ -492,35 +490,22 @@ function marketingNav(active = '') {
   const link = (href, label, key) =>
     `<a href="${href}"${key === active ? ' class="is-active" aria-current="page"' : ''}>${label}</a>`;
   return `
-  <div class="rk-util">
-    <div class="wrap inner">
-      <span class="rk-util-tag">${BANK.name}</span>
-      <span class="rk-util-sep" aria-hidden="true"></span>
-      <span class="rk-util-note">Personal &middot; Business &middot; Online banking</span>
-      <nav class="rk-util-links" aria-label="Quick links">
-        <a href="/support">Help centre</a>
-        <a href="/security-center">Report fraud</a>
-        <a href="/rates">Today&rsquo;s rates</a>
-      </nav>
-    </div>
-  </div>
   <header class="rf-marketing-nav">
     <div class="wrap inner">
       <a class="brandline" href="/" aria-label="${BANK.name} home">
-        <img class="hs-nav-logo" src="/assets/bank/logo-dark.png" alt="${BANK.name}" width="178" height="40" />
+        <img class="rf-nav-logo" src="/assets/bank/logo-light.png" alt="${BANK.name}" width="754" height="279" />
       </a>
       <nav>
         ${link('/personal', 'Personal', 'personal')}
         ${link('/business', 'Business', 'business')}
-        ${link('/digital', 'Digital banking', 'digital')}
         ${link('/rates', 'Rates &amp; fees', 'rates')}
         ${link('/security-center', 'Security', 'security-center')}
         ${link('/support', 'Support', 'support')}
       </nav>
       <span class="spacer"></span>
       <div class="actions">
-        <a class="rf-btn ghost sm hs-login" href="/signin">Log in</a>
-        <a class="rf-btn sm" href="/open-account">Get started</a>
+        <a class="rf-btn ghost sm" href="/open-account">Open an account</a>
+        <a class="rf-btn sm" href="/signin">Sign in</a>
       </div>
     </div>
   </header>`;
@@ -528,11 +513,23 @@ function marketingNav(active = '') {
 
 function marketingFooter() {
   return `
+  <section class="rf-cta" aria-label="Open an account">
+    <div class="wrap">
+      <span class="rf-eyebrow">Ready when you are</span>
+      <h2>Open an account in about ten minutes.</h2>
+      <span class="rf-rule" aria-hidden="true"></span>
+      <p>No monthly fee on Everyday Checking, 4.35% APY on savings, and a banker who answers when you call.</p>
+      <div class="rf-cta-actions">
+        <a class="rf-btn lg light" href="/open-account">Open an account</a>
+        <a class="rf-btn lg glass" href="/support">Talk to us</a>
+      </div>
+    </div>
+  </section>
   <footer class="rf-footer">
     <div class="wrap">
       <div class="cols">
         <div>
-          <img class="rf-lockup" src="/assets/bank/logo-light.png" alt="${BANK.name}" width="200" height="45" style="margin-bottom:18px" />
+          <img class="rf-lockup" src="/assets/bank/logo-light.png" alt="${BANK.name}" width="754" height="279" style="width:210px;margin-bottom:22px" />
           <p style="margin:0 0 12px;max-width:34ch">${BANK.tagline} Personal and business banking since ${BANK.established}.</p>
           <p style="margin:0;font-size:12.5px" data-site-row="address" hidden><span data-site="address"></span></p>
         </div>
@@ -540,7 +537,6 @@ function marketingFooter() {
           <h5>Bank</h5>
           <a href="/personal">Personal banking</a>
           <a href="/business">Business banking</a>
-          <a href="/digital">Digital banking</a>
           <a href="/rates">Rates and fees</a>
           <a href="/open-account">Open an account</a>
         </div>
@@ -582,7 +578,7 @@ function marketingFooter() {
 function marketingPage({ title, description, active, content, extraScripts = [], bodyClass = 'rf-site' }) {
   const { chatWidget } = require('../../site/layout');
   return [
-    head({ title, description, bodyClass }),
+    head({ title, description, bodyClass, theme: 'light' }),
     marketingNav(active),
     ticker(),
     content,

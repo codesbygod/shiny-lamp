@@ -16,9 +16,9 @@ Rename a file to the name in the first column and it takes that place.
 
 | Name                | Where it appears            | What suits it                                     |
 | ------------------- | --------------------------- | ------------------------------------------------- |
-| `rockfeild-family` | Home, 'For the whole family' panel | Square crop: people centred |
-| `rockfeild-mobile` | Home page landing hero, in the angled frame | Subject in the middle third; the frame crops the sides |
-| `rockfeild1`       | Home page 'Since 1924' band  | The building, or a branch from outside              |
+| `rockfeild-family` | Not placed at the moment | Square crop: people centred |
+| `rockfeild-mobile` | Home page hero, full width | Subject in the middle-to-right third; calm space on the left for the headline |
+| `rockfeild1`       | Not placed at the moment     | The building, or a branch from outside              |
 | `rockfeild2`       | Home security panel         | One person going through their money, unhurried    |
 | `rockfeildfamily`  | `/personal` header          | People at home, banking on a phone                 |
 | `rockfeild5`       | `/business` header          | A conversation across a desk                       |
