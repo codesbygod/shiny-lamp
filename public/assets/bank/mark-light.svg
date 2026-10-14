@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="86 163 262 255">
+  <defs>
+    <linearGradient id="rk-fold" x1="172" y1="0" x2="324" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0a5038"/>
+      <stop offset="1" stop-color="#0a7d57"/>
+    </linearGradient>
+    <linearGradient id="rk-band" x1="172" y1="0" x2="324" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8edcb4"/>
+      <stop offset="1" stop-color="#b5ecd0"/>
+    </linearGradient>
+  </defs>
+  <path fill="#0a7d57" fill-rule="evenodd" d="M172 165H244A80 80 0 0 1 324 245V278.51L172 365Z M172 215H245A17 17 0 0 1 245 249H172Z"/>
+  <path fill="#0a7d57" d="M205 346.22L268 310.38L345 415H248Z"/>
+  <path fill="url(#rk-fold)" d="M172 285L324 198.51V235.51L172 322Z"/>
+  <path fill="url(#rk-band)" d="M172 322L324 235.51V278.51L172 365Z"/>
+  <path fill="#137352" d="M88 215L172 165V285L88 332.8Z"/>
+  <path fill="#0a5038" d="M88 332.8L172 285V365L88 415Z"/></svg>

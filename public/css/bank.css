@@ -1,0 +1,2089 @@
+/* ==========================================================================
+   Rockfeild National Bank - application styling
+
+   Navy, emerald and mint, taken from the logo: navy for structure, emerald
+   (the R's bowl and leg) for every primary action, mint (the band across its
+   waist) for the marker that says "you are here" and the rules on dark
+   panels. Headlines in Montserrat, the wordmark's face; everything read in
+   sentences in Plus Jakarta Sans. The R's diagonal band, pitched at about
+   thirty degrees, recurs as the cut on photographs and the stripes behind
+   dark panels.
+
+   Loaded after styles.css. The marketing pages borrow the tokens and the
+   components; the signed-in application uses the shell, the tables and the
+   forms below.
+   ========================================================================== */
+
+:root {
+  /* Ink and paper.
+
+     Taken from the logo. Its wordmark is a deep navy and its ground a clean
+     near-white, so the page is a cool white with navy type, and the cards
+     separate from it with a light line rather than a heavy shadow. */
+  --rf-ink: #0f1d3a;
+  --rf-ink-2: #3a4862;
+  --rf-ink-3: #5a6679;
+  --rf-ink-4: #9aa3b3;
+  --rf-paper: #f4f6f8;
+  --rf-surface: #ffffff;
+  --rf-surface-2: #f9fafb;
+  --rf-surface-3: #edf1f4;
+  --rf-line: #e0e6eb;
+  --rf-line-2: #ebeff2;
+
+  /* Brand, from the R. Navy carries structure - headings, the sidebar, the
+     footer. Emerald, the R's bowl and leg, is every primary action. Mint, its
+     crossing band, is the accent: the active marker, rules on navy, the one
+     call to action on a dark ground. --rf-brass is the green dark enough to
+     set as text on white (6.4:1); the name is kept so nothing that used it
+     needs to change. */
+  --rf-navy: #0b1f44;
+  --rf-navy-2: #071634;
+  --rf-navy-3: #24427a;
+  --rf-navy-soft: #e8edf6;
+  --rf-emerald: #0a7d57;
+  --rf-emerald-2: #0a5a40;
+  --rf-mint: #8edcb4;
+  --rf-brass: #0a6e4d;
+  --rf-brass-2: #8edcb4;
+  --rf-brass-soft: #e2f5eb;
+
+  /* Money */
+  --rf-credit: #1b7a53;
+  --rf-credit-soft: #e4f2ea;
+  --rf-debit: #a3352b;
+  --rf-debit-soft: #fae9e7;
+  --rf-pending: #7a5c17;
+  --rf-pending-soft: #fbf1d8;
+  --rf-info: #1f5c8f;
+  --rf-info-soft: #e5eff7;
+
+  --rf-radius: 14px;
+  --rf-radius-sm: 8px;
+  --rf-radius-lg: 20px;
+  /* Two lights rather than one: a tight contact shadow that sits the card on
+     the page, and a wide soft one that gives it somewhere to sit. */
+  --rf-shadow: 0 1px 2px rgba(11, 31, 68, .05), 0 12px 28px -18px rgba(11, 31, 68, .22);
+  --rf-shadow-lg: 0 2px 4px rgba(11, 31, 68, .05), 0 32px 64px -28px rgba(11, 31, 68, .4);
+  --rf-shadow-hover: 0 2px 6px rgba(11, 31, 68, .06), 0 26px 50px -22px rgba(11, 31, 68, .34);
+
+  /* Glass. One set of values so every frosted surface is the same material:
+     a translucent white, a blurred backdrop, a bright top edge where the light
+     catches and a darker rule underneath. */
+  --rf-glass-bg: rgba(255, 255, 255, .72);
+  --rf-glass-line: rgba(255, 255, 255, .75);
+  --rf-glass-blur: saturate(180%) blur(18px);
+  --rf-glass-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset, 0 18px 40px -22px rgba(7, 22, 52, .5);
+  /* The same material over a photograph or a navy panel, where white glass
+     would wash the type out instead of holding it. */
+  --rf-glass-dark-bg: rgba(7, 22, 52, .5);
+  --rf-glass-dark-line: rgba(142, 220, 180, .28);
+
+  /* Button colours, themed here so the variants below keep the cascade. */
+  --rf-btn-face: var(--rf-emerald);
+  --rf-btn-edge: var(--rf-emerald-2);
+  --rf-btn-ghost-face: #ffffff;
+  --rf-btn-ghost-edge: var(--rf-line);
+
+  /* One easing for everything that moves, so the site has a single tempo. */
+  --rf-ease: cubic-bezier(.2, .7, .3, 1);
+  --rf-tilt: 240ms var(--rf-ease);
+  /* Type. Montserrat, the wordmark's face, for headlines and the figures read
+     as headlines, so a page title and the logo speak with one voice. Plus
+     Jakarta Sans for everything read in sentences or scanned in tables. */
+  --rf-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rf-headline: "Montserrat", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rf-display: var(--rf-headline);
+  --rf-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --rf-sidebar: 262px;
+}
+
+/* --------------------------------------------------------------- resets -- */
+
+.rf-app *,
+.rf-auth *,
+.rf-console *,
+.rf-site * { box-sizing: border-box; }
+
+body.rf-app,
+body.rf-auth,
+body.rf-console,
+body.rf-site {
+  margin: 0;
+  background: var(--rf-paper);
+  color: var(--rf-ink);
+  font-family: var(--rf-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.rf-app a, .rf-auth a, .rf-console a, .rf-site a { color: inherit; }
+
+/* An anchor styled as a button keeps the button's own colour: the blanket rule
+   above is more specific than .rf-btn and would otherwise repaint the label in
+   body ink, which on a navy button is invisible. One rule, because every
+   variant already declares its ink as --btn-ink - so this does not need to
+   know which variants exist. */
+.rf-app a.rf-btn, .rf-auth a.rf-btn, .rf-console a.rf-btn, .rf-site a.rf-btn { color: var(--btn-ink); }
+
+/* ---------------------------------------------------------------- shell -- */
+
+.rf-shell { display: flex; min-height: 100vh; }
+
+.rf-side {
+  width: var(--rf-sidebar);
+  flex: 0 0 var(--rf-sidebar);
+  background: linear-gradient(180deg, var(--rf-navy) 0%, var(--rf-navy-2) 100%);
+  color: #c9d6ea;
+  border-right: 1px solid rgba(142, 220, 180, .16);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 40;
+}
+
+.rf-side-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(142, 220, 180, .18);
+}
+
+/* The mark's tile. The artwork inside is inline SVG stroked with currentColor,
+   so one geometry serves the navy sidebar and the white nav; only the colour
+   of this box changes between them. */
+/* The mark, cut out of the supplied logo artwork. No tile behind it: the
+   drawing is line work with its own white space built in, and boxing it up
+   only fights that. */
+.rf-mark {
+  display: block; height: 28px; width: auto; flex: 0 0 auto;
+}
+.rf-mark.on-paper { height: 46px; }
+
+/* The whole lockup - mark over ROCKFEILD over BANK - where a panel is tall
+   enough to give it room. */
+.rf-lockup { display: block; height: auto; max-width: 100%; }
+
+.rf-side-brand strong { font-family: var(--rf-headline); font-weight: 800; font-size: 17px; letter-spacing: .05em; text-transform: uppercase; display: block; line-height: 1.1; }
+.rf-side-brand small { display: block; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--rf-brass-2); margin-top: 3px; }
+.rf-side-brand strong { color: #fff; }
+.rf-side .rf-mark { height: 34px; }
+
+.rf-nav { padding: 14px 12px; flex: 1; overflow-y: auto; }
+.rf-nav-group { margin: 0 0 18px; }
+.rf-nav-group h6 {
+  margin: 0 0 6px; padding: 0 10px;
+  font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: rgba(142, 220, 180, .72); font-weight: 700;
+}
+
+.rf-nav a {
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 11px; border-radius: 9px;
+  color: #c9d6ea; text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.rf-nav a:hover { background: rgba(255, 255, 255, .07); color: #fff; }
+/* Where you are: a mint bar on the left edge, the colour of the R's band. */
+.rf-nav a.is-active { background: rgba(142, 220, 180, .12); color: #fff; font-weight: 600; box-shadow: inset 3px 0 0 var(--rf-mint); }
+.rf-nav a.is-active svg { color: var(--rf-brass-2); opacity: 1; }
+.rf-nav a svg { width: 17px; height: 17px; flex: 0 0 17px; opacity: .85; }
+.rf-nav a .rf-pip {
+  margin-left: auto; background: var(--rf-mint); color: var(--rf-navy-2);
+  border-radius: 999px; font-size: 11px; font-weight: 700; padding: 1px 7px; min-width: 20px; text-align: center;
+}
+
+.rf-side-foot { padding: 14px; border-top: 1px solid rgba(142, 220, 180, .18); font-size: 12px; color: #9fb0c9; }
+.rf-side-foot .rf-side-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.rf-side-foot .rf-side-user strong { color: #fff; font-size: 13px; display: block; }
+.rf-side .rf-avatar { background: linear-gradient(150deg, var(--rf-mint) 0%, var(--rf-emerald-2) 100%); color: var(--rf-navy-2); }
+.rf-side-foot .rf-side-user span { font-size: 11px; }
+
+.rf-avatar {
+  width: 34px; height: 34px; border-radius: 50%; flex: 0 0 34px;
+  background: linear-gradient(150deg, #24427a, #0b1f44);
+  display: grid; place-items: center; color: #fff; font-weight: 600; font-size: 13px;
+  object-fit: cover; overflow: hidden;
+}
+.rf-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.rf-avatar.lg { width: 64px; height: 64px; flex-basis: 64px; font-size: 22px; }
+.rf-avatar.sm { width: 26px; height: 26px; flex-basis: 26px; font-size: 11px; }
+
+.rf-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+.rf-top {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(255, 255, 255, .84);
+  border-bottom: 1px solid var(--rf-line);
+  padding: 12px 26px;
+  display: flex; align-items: center; gap: 14px;
+}@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .rf-top {
+    background: var(--rf-glass-bg);
+    -webkit-backdrop-filter: var(--rf-glass-blur);
+    backdrop-filter: var(--rf-glass-blur);
+  }
+}
+
+.rf-top h1 { margin: 0; font-family: var(--rf-headline); font-weight: 700; font-size: 21px; letter-spacing: -.01em; color: var(--rf-navy); }
+.rf-top .rf-top-sub { font-size: 12.5px; color: var(--rf-ink-3); margin: 0; }
+.rf-top-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+.rf-burger {
+  display: none; width: 38px; height: 38px; border-radius: 9px;
+  border: 1px solid var(--rf-line); background: var(--rf-surface); cursor: pointer;
+  align-items: center; justify-content: center;
+}
+.rf-burger span { display: block; width: 16px; height: 1.6px; background: var(--rf-ink); box-shadow: 0 5px 0 var(--rf-ink), 0 -5px 0 var(--rf-ink); }
+
+.rf-content { padding: 24px 26px 64px; flex: 1; }
+
+/* The bottom bar. Hidden until the sidebar goes away; see Responsive. */
+.rf-tabbar { display: none; }
+.rf-content.narrow { max-width: 940px; }
+
+/* ------------------------------------------------------------- surfaces -- */
+
+.rf-card {
+  background: var(--rf-surface);
+  border: 1px solid var(--rf-line);
+  border-radius: var(--rf-radius);
+  box-shadow: var(--rf-shadow);
+}
+/* Cards that are a link, or a thing you pick, lift and lean under the cursor.
+   A card that is only a container does not - the tilt means "this responds",
+   and spending it on everything spends it on nothing. */
+.rf-card.interactive, a.rf-card, .rf-product, .rf-acct {
+  transition: transform var(--rf-tilt), box-shadow var(--rf-tilt), border-color var(--rf-tilt);
+  transform: perspective(900px);
+}
+.rf-card.interactive:hover, a.rf-card:hover, .rf-product:hover {
+  transform: perspective(900px) translateY(-4px) rotateX(2.2deg);
+  box-shadow: var(--rf-shadow-hover);
+  border-color: #a9d9c1;
+}
+.rf-card + .rf-card { margin-top: 16px; }
+/* ...but not where the container is already doing the spacing.
+
+   A grid or a flex row lays cards out side by side, and the margin above put
+   every card after the first 16px lower than the first - which then stretched
+   to the height of the row to cover the gap. The visible symptom was the
+   dashboard's four headline figures sitting on two different lines, the
+   leftmost floating above its neighbours. */
+:where(.rf-grid, .rf-row, .rf-stack, .rf-inline, .rf-spread) > .rf-card + .rf-card { margin-top: 0; }
+.rf-card-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 15px 18px; border-bottom: 1px solid var(--rf-line-2);
+}
+.rf-card-head h2, .rf-card-head h3 {
+  margin: 0; font-family: var(--rf-sans); font-size: 15.5px; letter-spacing: 0; font-weight: 600;
+}
+.rf-card-head .rf-card-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.rf-card-body { padding: 18px; }
+.rf-card-body.tight { padding: 12px 18px; }
+.rf-card-foot { padding: 12px 18px; border-top: 1px solid var(--rf-line-2); background: var(--rf-surface-2); border-radius: 0 0 var(--rf-radius) var(--rf-radius); font-size: 13px; color: var(--rf-ink-3); }
+
+.rf-grid { display: grid; gap: 16px; }
+.rf-grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.rf-grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.rf-grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.rf-grid.side { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; }
+.rf-grid.side-left { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: start; }
+
+/* ---------------------------------------------------------------- stats -- */
+
+.rf-stat { padding: 16px 18px; }
+.rf-stat .k { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--rf-ink-3); font-weight: 600; }
+/* nowrap, so that a figure too long for its tile overflows and /js/bank/core.js
+   can see it and bring the type down. Left to wrap, "$22,198," would sit on
+   one line and "030.77" on the next, and nothing would look wrong enough to
+   measure. */
+.rf-stat .v { font-family: var(--rf-display); font-size: 25px; letter-spacing: 0; margin: 6px 0 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rf-stat .d { font-size: 12.5px; color: var(--rf-ink-3); }
+.rf-stat .d.up { color: var(--rf-credit); }
+.rf-stat .d.down { color: var(--rf-debit); }
+
+/* -------------------------------------------------------------- amounts -- */
+
+.rf-amt { font-family: var(--rf-mono); font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: -.01em; }
+.rf-amt.credit { color: var(--rf-credit); }
+.rf-amt.debit { color: var(--rf-ink); }
+.rf-amt.big { font-family: var(--rf-display); font-size: 28px; letter-spacing: 0; }
+
+/* --------------------------------------------------------------- badges -- */
+
+.rf-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 9px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 600; letter-spacing: .01em;
+  background: var(--rf-surface-3); color: var(--rf-ink-2);
+  border: 1px solid transparent; white-space: nowrap;
+}
+.rf-badge.ok, .rf-badge.completed, .rf-badge.active, .rf-badge.posted, .rf-badge.verified, .rf-badge.sent, .rf-badge.accepted { background: var(--rf-credit-soft); color: var(--rf-credit); }
+.rf-badge.pending, .rf-badge.pending_review, .rf-badge.pending_verification, .rf-badge.review, .rf-badge.scheduled, .rf-badge.processing, .rf-badge.queued { background: var(--rf-pending-soft); color: var(--rf-pending); }
+.rf-badge.bad, .rf-badge.rejected, .rf-badge.failed, .rf-badge.suspended, .rf-badge.closed, .rf-badge.blocked, .rf-badge.frozen, .rf-badge.lost, .rf-badge.stolen { background: var(--rf-debit-soft); color: var(--rf-debit); }
+.rf-badge.info, .rf-badge.not_configured { background: var(--rf-info-soft); color: var(--rf-info); }
+.rf-badge.dot::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* -------------------------------------------------------------- buttons -- */
+
+/* Buttons.
+ *
+ * One shape, one height, one border, one shadow rule, one hover. A variant
+ * changes the fill and nothing else - which is the whole point: three buttons
+ * sitting side by side should read as three of the same object in different
+ * colours, not as three different components that happen to be near each
+ * other.
+ *
+ * Every variant therefore sets exactly two custom properties and lets the
+ * shared block below do the work.
+ */
+.rf-btn {
+  /* Indirected through theme tokens on :root rather than set here directly.
+     A dark-theme rule written as `:root:not([...]) .rf-btn` would out-specify
+     every `.rf-btn.brass` and `.rf-btn.glass` below it and repaint the whole
+     family navy. Theming the token instead leaves the cascade between the base
+     and its variants exactly where it belongs. */
+  --btn-face: var(--rf-btn-face);
+  --btn-edge: var(--rf-btn-edge);
+  --btn-ink: #fff;
+
+  position: relative; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 42px; padding: 0 20px;
+  border: 1px solid var(--btn-edge);
+  border-radius: 10px;
+  background: var(--btn-face);
+  color: var(--btn-ink);
+  font: 600 14px/1 var(--rf-sans);
+  letter-spacing: .01em;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  box-shadow: 0 1px 1px rgba(11, 31, 68, .06);
+  transition: transform var(--rf-tilt), box-shadow var(--rf-tilt),
+              background var(--rf-tilt), border-color var(--rf-tilt), filter var(--rf-tilt);
+  transform: perspective(600px);
+}
+.rf-btn svg { width: 16px; height: 16px; flex: 0 0 16px; }
+
+/* The lift, identical on every variant. */
+.rf-btn:hover {
+  transform: perspective(600px) translateY(-2px) rotateX(6deg);
+  box-shadow: 0 10px 20px -10px rgba(11, 31, 68, .45);
+  filter: brightness(1.07);
+}
+.rf-btn:active {
+  transform: perspective(600px) translateY(0) rotateX(0);
+  box-shadow: 0 1px 1px rgba(11, 31, 68, .06);
+  filter: brightness(.96);
+}
+.rf-btn:focus-visible { outline: 2px solid var(--rf-brass); outline-offset: 2px; }
+.rf-btn[disabled], .rf-btn.is-busy { opacity: .5; pointer-events: none; }
+
+/* ---- the variants: a face, an edge, an ink, and nothing else ---- */
+
+.rf-btn.brass  { --btn-face: var(--rf-brass); --btn-edge: #08573d; --btn-ink: #fff; }
+/* Mint, for the one action on a navy ground. Navy type on it, not white:
+   white on mint is under 2:1. */
+.rf-btn.mint   { --btn-face: var(--rf-mint); --btn-edge: var(--rf-emerald-2); --btn-ink: var(--rf-navy-2); }
+.rf-btn.mint:hover { --btn-face: #a5e6c4; }
+.rf-btn.danger { --btn-face: var(--rf-debit); --btn-edge: #8a2b23; }
+.rf-btn.ghost  { --btn-face: var(--rf-btn-ghost-face); --btn-edge: var(--rf-btn-ghost-edge); --btn-ink: var(--rf-ink); }
+.rf-btn.ghost:hover { --btn-edge: #b5d6c5; }
+/* Over a photograph, where a white button would punch a hole in the picture. */
+.rf-btn.glass  { --btn-face: rgba(255, 255, 255, .1); --btn-edge: rgba(255, 255, 255, .55); }
+.rf-btn.glass:hover { --btn-face: rgba(255, 255, 255, .2); --btn-edge: rgba(255, 255, 255, .8); }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .rf-btn.glass { -webkit-backdrop-filter: var(--rf-glass-blur); backdrop-filter: var(--rf-glass-blur); }
+}
+
+/* ---- sizes, which change the box and never the colours ---- */
+
+.rf-btn.lg { min-height: 50px; padding: 0 28px; font-size: 15.5px; }
+.rf-btn.sm { min-height: 32px; padding: 0 13px; font-size: 13px; gap: 6px; }
+.rf-btn.sm svg { width: 14px; height: 14px; flex: 0 0 14px; }
+.rf-btn.block { width: 100%; }
+/* A full-width button leaning back looks like the form is falling over. */
+.rf-btn.block:hover { transform: perspective(600px) translateY(-2px); }
+
+/* The one member of the family that is not an object: a link is text. */
+.rf-btn.link {
+  --btn-face: none; --btn-edge: transparent; --btn-ink: var(--rf-navy);
+  min-height: 0; padding: 2px 0; box-shadow: none;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.rf-btn.link:hover {
+  --btn-ink: var(--rf-navy-2);
+  transform: none; filter: none; box-shadow: none;
+}
+
+.rf-icon-btn {
+  width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+  border: 1px solid var(--rf-line); background: var(--rf-surface); cursor: pointer; position: relative;
+}
+.rf-icon-btn:hover { background: var(--rf-surface-3); }
+.rf-icon-btn .rf-pip {
+  position: absolute; top: -3px; right: -3px; background: var(--rf-debit); color: #fff;
+  border-radius: 999px; font-size: 10px; font-weight: 700; padding: 1px 5px; border: 2px solid var(--rf-paper);
+}
+
+/* ---------------------------------------------------------------- forms -- */
+
+.rf-field { margin-bottom: 14px; }
+.rf-field > label, .rf-label {
+  display: block; font-size: 12.5px; font-weight: 600; color: var(--rf-ink-2); margin-bottom: 5px;
+}
+.rf-field .hint { font-size: 12px; color: var(--rf-ink-3); margin-top: 5px; }
+.rf-field .err { font-size: 12px; color: var(--rf-debit); margin-top: 5px; min-height: 0; }
+
+.rf-input, .rf-select, .rf-textarea {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--rf-line); border-radius: var(--rf-radius-sm);
+  background: var(--rf-surface); color: var(--rf-ink);
+  font: 400 14.5px/1.4 var(--rf-sans);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.rf-input:focus, .rf-select:focus, .rf-textarea:focus {
+  outline: none; border-color: var(--rf-navy-3); box-shadow: 0 0 0 3px rgba(10, 125, 87, .18);
+}
+.rf-input[readonly] { background: var(--rf-surface-3); color: var(--rf-ink-2); }
+.rf-textarea { min-height: 96px; resize: vertical; }
+.rf-input.mono, .rf-select.mono { font-family: var(--rf-mono); letter-spacing: .02em; }
+
+/* A date, as three lists instead of a calendar.
+
+   The year takes the most room of the three because it is the one somebody
+   scrolls; the day the least, because it is two digits. Each select keeps the
+   browser's own control, which on a phone means the system wheel picker and
+   on a desktop a list you can type the first characters into - both better at
+   1961 than a month grid is. */
+.rf-dateparts { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .78fr) minmax(0, 1.05fr); gap: 8px; }
+.rf-dateparts .rf-select { min-width: 0; padding-left: 10px; padding-right: 6px; }
+
+/* Wherever a date sits in a filter bar rather than a form, the label goes
+   beside it: a stack of label-over-control in a row of bare inputs reads as a
+   different kind of thing, which it is not. */
+.rf-datefield { display: flex; align-items: center; gap: 8px; }
+.rf-datefield .rf-label { margin: 0; font-size: 12.5px; color: var(--rf-ink-3); white-space: nowrap; }
+.rf-datefield .rf-dateparts { grid-template-columns: repeat(3, auto); }
+.rf-datefield .rf-select { width: auto; }
+
+/* A field in a row that sets its own spacing. */
+.rf-field-flush { margin-bottom: 0; }
+.rf-input.money { font-family: var(--rf-mono); font-size: 17px; }
+
+.rf-row { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.rf-row.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.rf-row.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.rf-check { display: flex; align-items: flex-start; gap: 9px; font-size: 13.5px; margin-bottom: 9px; cursor: pointer; }
+.rf-check input { margin-top: 2px; width: 16px; height: 16px; accent-color: var(--rf-navy); }
+.rf-check span small { display: block; color: var(--rf-ink-3); font-size: 12px; }
+
+.rf-switch { display: flex; align-items: center; gap: 11px; padding: 11px 0; border-bottom: 1px solid var(--rf-line-2); }
+.rf-switch:last-child { border-bottom: 0; }
+.rf-switch .t { flex: 1; font-size: 13.5px; }
+.rf-switch .t small { display: block; color: var(--rf-ink-3); font-size: 12px; }
+.rf-switch input { appearance: none; width: 40px; height: 23px; border-radius: 999px; background: var(--rf-line); position: relative; cursor: pointer; transition: background .15s ease; flex: 0 0 40px; }
+.rf-switch input::after { content: ""; position: absolute; top: 2.5px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .15s ease; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.rf-switch input:checked { background: var(--rf-credit); }
+.rf-switch input:checked::after { transform: translateX(16px); }
+.rf-switch input:disabled { opacity: .5; cursor: not-allowed; }
+
+.rf-segment { display: inline-flex; background: var(--rf-surface-3); border-radius: 999px; padding: 3px; gap: 2px; flex-wrap: wrap; }
+.rf-segment button {
+  border: 0; background: none; padding: 7px 14px; border-radius: 999px;
+  font: 600 13px/1 var(--rf-sans); color: var(--rf-ink-2); cursor: pointer;
+}
+.rf-segment button.is-active { background: var(--rf-surface); color: var(--rf-ink); box-shadow: var(--rf-shadow); }
+
+/* --------------------------------------------------------------- tables -- */
+
+.rf-table { width: 100%; border-collapse: collapse; font-size: 13.8px; }
+.rf-table th {
+  text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--rf-ink-3); font-weight: 600; padding: 10px 14px; border-bottom: 1px solid var(--rf-line);
+  white-space: nowrap; background: var(--rf-surface-2);
+}
+.rf-table td { padding: 11px 14px; border-bottom: 1px solid var(--rf-line-2); vertical-align: middle; }
+.rf-table tbody tr:last-child td { border-bottom: 0; }
+.rf-table tbody tr.clickable { cursor: pointer; }
+.rf-table tbody tr.clickable:hover { background: var(--rf-surface-2); }
+.rf-table td.num, .rf-table th.num { text-align: right; font-family: var(--rf-mono); font-variant-numeric: tabular-nums; }
+.rf-table .sub { display: block; font-size: 12px; color: var(--rf-ink-3); }
+/* The wrapper is both the backstop - a table that still will not fit scrolls
+   rather than breaking the card - and, further down, the box the table asks
+   how much room it has. A table's problem is the width of its column, which
+   is not the width of the screen. */
+.rf-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; container: rf-table / inline-size; }
+
+.rf-list { list-style: none; margin: 0; padding: 0; }
+.rf-list li {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 18px; border-bottom: 1px solid var(--rf-line-2);
+}
+.rf-list li:last-child { border-bottom: 0; }
+.rf-list .t { flex: 1; min-width: 0; }
+.rf-list .t strong { display: block; font-weight: 600; font-size: 14px; }
+.rf-list .t span { font-size: 12.5px; color: var(--rf-ink-3); }
+
+.rf-empty { padding: 44px 20px; text-align: center; color: var(--rf-ink-3); }
+.rf-empty svg { width: 34px; height: 34px; opacity: .4; margin-bottom: 10px; }
+.rf-empty strong { display: block; color: var(--rf-ink-2); font-size: 15px; margin-bottom: 4px; font-family: var(--rf-display); }
+
+/* ---------------------------------------------------------- account tile -- */
+
+.rf-acct {
+  display: block; text-decoration: none; padding: 16px 18px;
+  border: 1px solid var(--rf-line); border-radius: var(--rf-radius);
+  background: var(--rf-surface); box-shadow: var(--rf-shadow);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.rf-acct:hover { transform: perspective(900px) translateY(-4px) rotateX(2.2deg); box-shadow: var(--rf-shadow-hover); }
+.rf-acct .top { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+.rf-acct .top strong { font-size: 14px; }
+.rf-acct .no { font-family: var(--rf-mono); font-size: 12px; color: var(--rf-ink-3); }
+.rf-acct .bal { font-family: var(--rf-display); font-size: 23px; letter-spacing: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rf-acct .meta { display: flex; gap: 14px; margin-top: 8px; font-size: 12px; color: var(--rf-ink-3); }
+.rf-acct.credit .bal { color: var(--rf-debit); }
+
+/* --------------------------------------------------------- payment card -- */
+
+.rf-plastic {
+  position: relative; aspect-ratio: 1.586; border-radius: 16px; padding: 20px;
+  color: #fff; overflow: hidden; box-shadow: var(--rf-shadow-lg);
+  background: linear-gradient(140deg, #24427a 0%, #0b1f44 55%, #071634 100%);
+  display: flex; flex-direction: column; justify-content: space-between;
+  max-width: 380px;
+}
+.rf-plastic.brass { background: linear-gradient(140deg, #a9793a 0%, #7d5526 60%, #4a3115 100%); }
+.rf-plastic.is-frozen { filter: saturate(.25) brightness(1.05); }
+.rf-plastic::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(120% 80% at 85% 10%, rgba(255,255,255,.16), transparent 60%);
+  pointer-events: none;
+}
+.rf-plastic .brandline { display: flex; align-items: center; justify-content: space-between; font-family: var(--rf-display); font-size: 14px; letter-spacing: .02em; }
+.rf-plastic .chip { width: 38px; height: 28px; border-radius: 5px; background: linear-gradient(140deg, #f6b896, #b3923f); opacity: .92; }
+.rf-plastic .pan { font-family: var(--rf-mono); font-size: 17px; letter-spacing: .09em; }
+.rf-plastic .foot { display: flex; justify-content: space-between; align-items: flex-end; font-size: 11.5px; }
+.rf-plastic .foot .k { display: block; font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; opacity: .65; }
+.rf-plastic .scheme { font-family: var(--rf-display); font-size: 15px; font-weight: 700; letter-spacing: .02em; }
+
+/* --------------------------------------------------------------- charts -- */
+
+.rf-bars { display: flex; align-items: flex-end; gap: 14px; height: 150px; padding-top: 8px; }
+.rf-bars .col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+.rf-bars .pair { display: flex; gap: 3px; align-items: flex-end; height: 100%; width: 100%; justify-content: center; }
+.rf-bars .bar { width: 13px; border-radius: 4px 4px 0 0; min-height: 3px; }
+.rf-bars .bar.in { background: var(--rf-credit); opacity: .85; }
+.rf-bars .bar.out { background: var(--rf-navy-3); opacity: .8; }
+.rf-bars .lbl { font-size: 11px; color: var(--rf-ink-3); }
+
+.rf-ring { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.rf-ring svg { width: 138px; height: 138px; flex: 0 0 138px; }
+.rf-ring .legend { flex: 1; min-width: 190px; }
+.rf-ring .legend li { display: flex; align-items: center; gap: 9px; padding: 5px 0; font-size: 13px; border: 0; }
+.rf-ring .legend .sw { width: 9px; height: 9px; border-radius: 3px; flex: 0 0 9px; }
+.rf-ring .legend .amt { margin-left: auto; font-family: var(--rf-mono); font-size: 12.5px; }
+
+.rf-spark { display: block; width: 100%; height: 44px; }
+
+/* --------------------------------------------------------------- modals -- */
+
+.rf-modal-backdrop {
+  position: fixed; inset: 0; background: rgba(8, 16, 30, .52);
+  -webkit-backdrop-filter: saturate(120%) blur(8px);
+  backdrop-filter: saturate(120%) blur(8px); z-index: 90;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 5vh 16px; overflow-y: auto;
+}
+.rf-modal {
+  background: var(--rf-surface); border-radius: var(--rf-radius-lg);
+  border: 1px solid var(--rf-glass-line);
+  width: 100%; max-width: 560px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 40px 80px -30px rgba(8, 20, 38, .6);
+  animation: rf-rise .26s var(--rf-ease);
+}
+.rf-modal.wide { max-width: 860px; }
+.rf-modal.narrow { max-width: 440px; }
+@keyframes rf-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.rf-modal-head { display: flex; align-items: center; gap: 12px; padding: 18px 22px; border-bottom: 1px solid var(--rf-line-2); }
+.rf-modal-head h3 { margin: 0; font-family: var(--rf-sans); font-weight: 600; font-size: 18px; letter-spacing: 0; }
+.rf-modal-head button { margin-left: auto; border: 0; background: none; font-size: 22px; line-height: 1; cursor: pointer; color: var(--rf-ink-3); }
+.rf-modal-body { padding: 22px; }
+.rf-modal-foot { padding: 16px 22px; border-top: 1px solid var(--rf-line-2); display: flex; gap: 10px; justify-content: flex-end; background: var(--rf-surface-2); border-radius: 0 0 var(--rf-radius-lg) var(--rf-radius-lg); }
+
+/* --------------------------------------------------------------- toasts -- */
+
+.rf-toasts { position: fixed; right: 18px; bottom: 18px; z-index: 100; display: flex; flex-direction: column; gap: 9px; max-width: 380px; }
+.rf-toast {
+  background: var(--rf-navy); color: #fff; padding: 12px 16px; border-radius: 12px;
+  box-shadow: var(--rf-shadow-lg); font-size: 13.5px; display: flex; gap: 10px; align-items: flex-start;
+  animation: rf-rise .2s ease;
+}
+.rf-toast.ok { background: #1b5e40; }
+.rf-toast.bad { background: #7c261d; }
+.rf-toast strong { display: block; font-size: 13.5px; }
+.rf-toast span { opacity: .85; font-size: 12.5px; }
+
+/* --------------------------------------------------------------- notice -- */
+
+.rf-notice {
+  display: flex; gap: 11px; align-items: flex-start;
+  padding: 12px 15px; border-radius: var(--rf-radius-sm);
+  background: var(--rf-info-soft); color: #163e5f; font-size: 13.5px;
+  border: 1px solid rgba(31, 92, 143, .18); margin-bottom: 16px;
+}
+.rf-notice.warn { background: var(--rf-pending-soft); color: #6d5312; border-color: rgba(138, 106, 31, .22); }
+.rf-notice.bad { background: var(--rf-debit-soft); color: #7c261d; border-color: rgba(163, 53, 43, .2); }
+.rf-notice.ok { background: var(--rf-credit-soft); color: #14603f; border-color: rgba(27, 122, 83, .2); }
+.rf-notice strong { display: block; }
+
+/* ----------------------------------------------------------------- tabs -- */
+
+.rf-tabs { display: flex; gap: 3px; border-bottom: 1px solid var(--rf-line); overflow-x: auto; margin-bottom: 18px; }
+.rf-tabs button {
+  border: 0; background: none; padding: 11px 15px; cursor: pointer;
+  font: 600 13.5px/1 var(--rf-sans); color: var(--rf-ink-3);
+  border-bottom: 2px solid transparent; white-space: nowrap;
+}
+.rf-tabs button:hover { color: var(--rf-ink); }
+.rf-tabs button.is-active { color: var(--rf-navy); border-bottom-color: var(--rf-brass); }
+
+/* -------------------------------------------------------------- details -- */
+
+.rf-dl { display: grid; grid-template-columns: minmax(120px, 38%) 1fr; gap: 0; font-size: 13.5px; }
+.rf-dl dt { color: var(--rf-ink-3); padding: 8px 0; border-bottom: 1px solid var(--rf-line-2); }
+.rf-dl dd { margin: 0; padding: 8px 0; border-bottom: 1px solid var(--rf-line-2); text-align: right; font-weight: 500; }
+.rf-dl dt:last-of-type, .rf-dl dd:last-of-type { border-bottom: 0; }
+.rf-dl dd.mono { font-family: var(--rf-mono); font-size: 12.5px; }
+
+.rf-copy { border: 0; background: none; cursor: pointer; color: var(--rf-navy); padding: 0 0 0 6px; font-size: 12px; }
+
+/* ------------------------------------------------------------- timeline -- */
+
+.rf-timeline { list-style: none; margin: 0; padding: 0 0 0 18px; border-left: 2px solid var(--rf-line); }
+.rf-timeline li { position: relative; padding: 0 0 18px 16px; }
+.rf-timeline li::before {
+  content: ""; position: absolute; left: -25px; top: 4px;
+  width: 11px; height: 11px; border-radius: 50%; background: var(--rf-line); border: 2px solid var(--rf-surface);
+}
+.rf-timeline li.ok::before { background: var(--rf-credit); }
+.rf-timeline li.warn::before { background: var(--rf-pending); }
+.rf-timeline li.bad::before { background: var(--rf-debit); }
+.rf-timeline strong { display: block; font-size: 13.5px; }
+.rf-timeline span { font-size: 12px; color: var(--rf-ink-3); }
+
+/* ------------------------------------------------------------ skeletons -- */
+
+.rf-skel { background: linear-gradient(90deg, var(--rf-surface-3) 25%, var(--rf-line-2) 37%, var(--rf-surface-3) 63%); background-size: 400% 100%; animation: rf-shimmer 1.3s infinite; border-radius: 6px; height: 14px; }
+@keyframes rf-shimmer { from { background-position: 100% 50%; } to { background-position: 0 50%; } }
+
+/* ---------------------------------------------------------------- utils -- */
+
+.rf-muted { color: var(--rf-ink-3); }
+.rf-small { font-size: 12.5px; }
+.rf-mono { font-family: var(--rf-mono); }
+.rf-right { text-align: right; }
+.rf-center { text-align: center; }
+.rf-nowrap { white-space: nowrap; }
+.rf-stack { display: flex; flex-direction: column; gap: 14px; }
+.rf-inline { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.rf-spread { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.rf-mt { margin-top: 16px; }
+.rf-mb { margin-bottom: 16px; }
+.rf-hide { display: none !important; }
+.rf-divider { height: 1px; background: var(--rf-line-2); margin: 16px 0; border: 0; }
+.rf-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ==========================================================================
+   Sign-in and the other pages you meet before you are anybody
+   ========================================================================== */
+
+.rf-auth-wrap { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+
+.rf-auth-aside {
+  background: radial-gradient(110% 90% at 0% 0%, #16305e 0%, var(--rf-navy) 50%, var(--rf-navy-2) 100%);
+  color: #f4f6f8; border-right: 3px solid var(--rf-mint); padding: 44px 48px; display: flex; flex-direction: column; position: relative; overflow: hidden;
+}
+/* The R's band again: two diagonal stripes rising across the foot of the panel. */
+.rf-auth-aside::after {
+  content: ""; position: absolute; inset: 0; opacity: .55; pointer-events: none;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 520'%3E%3Cpath d='M0 470 600 128v70L0 540z' fill='%238edcb4' opacity='.16'/%3E%3Cpath d='M0 560 600 218v22L0 582z' fill='%230a7d57' opacity='.55'/%3E%3C/svg%3E") no-repeat right -40px bottom -20px / 720px auto,
+    radial-gradient(60% 40% at 85% 10%, rgba(10, 125, 87, .16), transparent 70%);
+}
+.rf-auth-aside > * { position: relative; z-index: 1; }
+.rf-auth-aside .brandline { display: flex; align-items: center; gap: 11px; margin-bottom: auto; }
+.rf-auth-aside h2 { font-family: var(--rf-headline); font-weight: 800; font-size: clamp(29px, 3.5vw, 44px); line-height: 1.14; letter-spacing: 0; margin: 0 0 14px; }
+.rf-auth-aside h2 { color: #fff; }
+.rf-auth-aside p { color: #c9d6ea; font-size: 15px; max-width: 42ch; margin: 0 0 26px; }
+.rf-auth-points { list-style: none; padding: 0; margin: 0 0 30px; display: grid; gap: 11px; }
+.rf-auth-points li { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: #d9e2ef; }
+.rf-auth-points svg { width: 17px; height: 17px; flex: 0 0 17px; color: var(--rf-mint); margin-top: 1px; }
+.rf-auth-foot { font-size: 11.5px; color: #8e9db4; line-height: 1.7; border-top: 1px solid rgba(142, 220, 180, .2); padding-top: 16px; }
+.rf-auth-aside .rf-lockup { height: 54px; width: auto; }
+
+.rf-auth-panel { display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+
+/* The lockup, for the widths where the aside is not on screen to carry it.
+
+   Below 900px the left-hand panel is gone, and with it the only place the
+   bank's name and mark appeared: a customer arrived at a sign-in form with
+   nothing on the page saying whose it was. The mark is the light one on a
+   navy ground, which is the same file the application sidebar already loads
+   and works in either theme - the alternative, dark line work, disappears on
+   a dark page. */
+/* `a.` rather than `.`: the reset a few rules up sets every anchor inside
+   .rf-auth to `color: inherit`, which outranks a bare class and left the name
+   in ink on a navy ground - invisible. */
+a.rf-auth-brand {
+  display: none; align-items: center; gap: 12px;
+  width: 100%; max-width: 408px; margin: 0 0 20px;
+  padding: 14px 18px; border-radius: var(--rf-radius);
+  background: #fff; color: var(--rf-ink); text-decoration: none; border: 1px solid var(--rf-line);
+  box-shadow: var(--rf-shadow);
+}
+.rf-auth-brand img { height: 30px; width: auto; flex: 0 0 auto; }
+.rf-auth-brand strong { display: block; font-family: var(--rf-display); font-size: 15px; letter-spacing: .01em; color: var(--rf-ink); }
+.rf-auth-brand small { display: block; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--rf-ink-3); margin-top: 2px; }
+.rf-auth-box { width: 100%; max-width: 408px; }
+.rf-auth-box h1 { font-family: var(--rf-headline); font-weight: 800; font-size: 32px; line-height: 1.15; letter-spacing: -.02em; margin: 0 0 8px; color: var(--rf-navy); }
+.rf-auth-box .lede { color: var(--rf-ink-3); margin: 0 0 24px; font-size: 14.5px; }
+.rf-auth-box .rf-card { padding: 24px; }
+.rf-auth-alt { text-align: center; margin-top: 20px; font-size: 13.5px; color: var(--rf-ink-3); }
+
+.rf-otp { display: flex; gap: 9px; justify-content: space-between; }
+.rf-otp input {
+  width: 100%; aspect-ratio: .78; text-align: center; font: 600 22px/1 var(--rf-mono);
+  border: 1px solid var(--rf-line); border-radius: var(--rf-radius-sm); background: var(--rf-surface);
+}
+.rf-otp input:focus { outline: none; border-color: var(--rf-navy-3); box-shadow: 0 0 0 3px rgba(10, 125, 87, .18); }
+
+.rf-devcode {
+  margin-top: 14px; padding: 11px 14px; border-radius: var(--rf-radius-sm);
+  background: var(--rf-pending-soft); color: #6d5312; font-size: 12.5px; border: 1px dashed rgba(138, 106, 31, .4);
+}
+.rf-devcode code { font-family: var(--rf-mono); font-size: 15px; font-weight: 600; letter-spacing: .18em; }
+
+/* ------------------------------------------------------ reduced motion -- */
+
+/* Everything above that moves, stops.
+
+   The tilt is decoration; the state it signals is carried by the shadow and
+   the border colour, which stay. Blur is not motion and is left alone. */
+@media (prefers-reduced-motion: reduce) {
+  .rf-btn,
+  .rf-card.interactive, a.rf-card, .rf-product, .rf-acct {
+    transition-property: box-shadow, background, border-color, filter;
+    transform: none;
+  }
+  .rf-btn:hover, .rf-btn:active { transform: none; }
+  .rf-btn:hover, .rf-btn:active,
+  .rf-card.interactive:hover, a.rf-card:hover, .rf-product:hover, .rf-acct:hover {
+    transform: none;
+  }
+  .rf-modal { animation: none; }
+  .rf-toast { animation: none; }
+}
+
+/* ==========================================================================
+   Marketing pages (the public bank site)
+   ========================================================================== */
+
+.rf-hero {
+  position: relative; padding: clamp(70px, 11vw, 130px) 0 clamp(50px, 7vw, 90px);
+  background: linear-gradient(160deg, #16305e 0%, #0b1f44 55%, #071634 100%);
+  color: #eef2f8; overflow: hidden; isolation: isolate;
+  border-bottom: 3px solid var(--rf-mint);
+}
+/* The home hero's height is set against the screen's height, not its width.
+
+   Scaled on width, a 1366 x 610 laptop was given the same 168px of air above
+   the eyebrow as a 27in monitor, which put the two buttons 56px below the
+   fold: the first thing a visitor is meant to do was the one thing they could
+   not see. Height is what "above the fold" is measured in, so that is what
+   the padding reads. */
+.rf-hero.tall { padding: clamp(52px, 10vh, 132px) 0 clamp(40px, 7vh, 88px); }
+.rf-hero.compact { padding: clamp(58px, 8vw, 96px) 0 clamp(38px, 5vw, 62px); }
+
+/* The photograph, as a photograph.
+
+   It used to sit at 30% opacity over the gradient, which left it looking like
+   a mistake rather than a picture. Now it is opaque and the scrim below does
+   the work of keeping type legible - which is the same job done in the right
+   order. */
+.rf-hero-photo {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  z-index: -2;
+}
+
+/* The scrim. Dark and near-opaque on the left where the words are, clearing to
+   almost nothing on the right so the picture is still a picture. The second
+   gradient keeps the bottom edge dark enough for the glass panel to read. */
+.rf-hero.has-photo::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(100deg, rgba(8, 20, 38, .78) 0%, rgba(10, 26, 48, .62) 40%, rgba(12, 30, 56, .26) 72%, rgba(12, 30, 56, .1) 100%),
+    linear-gradient(to top, rgba(8, 20, 38, .5) 0%, transparent 52%);
+}
+.rf-hero::after {
+  content: ""; position: absolute; inset: 0; opacity: .55; pointer-events: none; z-index: -1;
+  background:
+    radial-gradient(55% 45% at 78% 12%, rgba(10, 125, 87, .32), transparent 70%),
+    radial-gradient(45% 45% at 8% 88%, rgba(36, 66, 122, .55), transparent 70%);
+}
+/* Over a photograph the brass wash is a tint, not a light source. */
+.rf-hero.has-photo::after { opacity: .22; }
+
+/* The two pages with no photograph of their own get the mark instead, drawn
+   large and faint off the right edge. */
+.rf-hero-mark {
+  position: absolute; top: 50%; right: -60px; transform: translateY(-50%);
+  height: 78%; width: auto; opacity: .09; z-index: -1; pointer-events: none;
+}
+
+.rf-hero .wrap { position: relative; z-index: 1; }
+.rf-hero-copy { max-width: 46rem; }
+.rf-hero h1 { font-family: var(--rf-headline); font-weight: 800; font-size: clamp(46px, 7.4vw, 88px); line-height: 1.04; letter-spacing: 0; margin: 0 0 22px; color: #fff; }
+.rf-hero p.lede { font-size: clamp(17px, 1.8vw, 21px); line-height: 1.55; color: #d9e2ef; max-width: 52ch; margin: 0 0 32px; }
+.rf-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--rf-brass-2); font-weight: 600; margin-bottom: 18px; }
+.rf-hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* The figures, on glass. Sitting them on a frosted panel over the photograph
+   is what stops them reading as four numbers floating on a building. */
+.rf-hero-stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px 20px; margin-top: clamp(28px, 4vh, 56px); padding: 22px 26px;
+  border-radius: var(--rf-radius-lg);
+}
+.rf-hero-stats .k { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #c9d6ea; }
+.rf-hero-stats .v { font-family: var(--rf-display); font-size: clamp(20px, 2.1vw, 24px); letter-spacing: 0; color: #fff; }
+
+/* ---------------------------------------------------------------- glass -- */
+
+/* One frosted material, used wherever something floats over something else.
+
+   backdrop-filter is the whole effect, and it is not universal, so the
+   background colour underneath is opaque enough to carry the panel on its own
+   where the filter does nothing. @supports then thins it out and turns the
+   blur on, rather than the other way round. */
+/* The panel form, for glass that floats over a photograph. The two sticky
+   bars use the same tokens but keep their own rules, because a nav wants one
+   border along the bottom rather than four around it. */
+.rf-glass {
+  background: rgba(11, 31, 68, .72);
+  border: 1px solid var(--rf-glass-dark-line);
+  box-shadow: var(--rf-glass-shadow);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .rf-glass {
+    background: var(--rf-glass-dark-bg);
+    -webkit-backdrop-filter: var(--rf-glass-blur);
+    backdrop-filter: var(--rf-glass-blur);
+  }
+}
+
+.rf-section { padding: clamp(52px, 7vw, 92px) 0; }
+.rf-section.alt { background: var(--rf-surface); border-block: 1px solid var(--rf-line); }
+.rf-section h2 { font-family: var(--rf-headline); font-weight: 800; font-size: clamp(30px, 3.8vw, 46px); line-height: 1.12; letter-spacing: 0; margin: 0 0 12px; }
+.rf-section .section-lede { color: var(--rf-ink-3); font-size: 16px; max-width: 60ch; margin: 0 0 34px; }
+
+.rf-product {
+  display: flex; flex-direction: column; padding: 26px;
+  background: var(--rf-surface); border: 1px solid var(--rf-line);
+  border-radius: var(--rf-radius-lg); box-shadow: var(--rf-shadow); height: 100%;
+}
+.rf-product .rate { font-family: var(--rf-display); font-size: 31px; letter-spacing: 0; color: var(--rf-navy); }
+.rf-product .rate small { font-size: 13px; color: var(--rf-ink-3); letter-spacing: 0; }
+.rf-product h3 { font-family: var(--rf-display); font-size: 17px; margin: 14px 0 7px; letter-spacing: 0; }
+.rf-product p { color: var(--rf-ink-3); font-size: 14px; margin: 0 0 16px; }
+.rf-product ul { list-style: none; padding: 0; margin: 0 0 20px; display: grid; gap: 8px; }
+.rf-product li { font-size: 13.5px; display: flex; gap: 9px; align-items: flex-start; }
+.rf-product li svg { width: 15px; height: 15px; flex: 0 0 15px; color: var(--rf-credit); margin-top: 2px; }
+.rf-product .rf-btn { margin-top: auto; }
+
+.rf-feature { display: flex; gap: 14px; align-items: flex-start; }
+.rf-feature .ic {
+  width: 40px; height: 40px; flex: 0 0 40px; border-radius: 11px;
+  background: var(--rf-brass-soft); color: #7c5720; display: grid; place-items: center;
+}
+.rf-feature h3 { font-family: var(--rf-display); font-size: 16px; margin: 0 0 5px; }
+.rf-feature p { margin: 0; color: var(--rf-ink-3); font-size: 14px; }
+
+.rf-disclosure { font-size: 11.5px; color: var(--rf-ink-3); line-height: 1.7; }
+
+/* Solid white, not frosted.
+
+   The logo is black line work drawn on white, so the bar it sits in should be
+   the same white - a tinted or translucent bar puts a faint rectangle around
+   the artwork wherever the page behind it is dark. */
+.rf-marketing-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: #fff;
+  border-bottom: 1px solid var(--rf-line);
+}
+.rf-marketing-nav .inner { display: flex; align-items: center; gap: 22px; padding: 13px 0; }
+.rf-marketing-nav .brandline { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.rf-marketing-nav .brandline strong { font-family: var(--rf-display); font-size: 15px; letter-spacing: .01em; }
+.rf-marketing-nav .brandline small { display: block; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--rf-ink-3); }
+.rf-marketing-nav nav { display: flex; gap: 4px; margin-left: 14px; }
+/* Nav items are marked by a rule beneath them rather than a filled pill.
+
+   The pill was painted with --rf-surface-3, which is a dark token in the dark
+   theme - and since this bar keeps its white ground in both themes, the
+   selected item came out as near-black text on a near-black pill. Colours here
+   are therefore fixed rather than themed: the bar is always white, so its
+   contents are always dark on white. */
+.rf-marketing-nav nav a {
+  position: relative;
+  padding: 9px 2px 8px; margin: 0 11px;
+  text-decoration: none; font-size: 14.5px; font-weight: 500;
+  color: var(--rf-ink-2);
+  transition: color .16s var(--rf-ease);
+}
+.rf-marketing-nav nav a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+  background: var(--rf-mint); transform: scaleX(0); transform-origin: center;
+  transition: transform .2s var(--rf-ease);
+}
+.rf-marketing-nav nav a:hover { color: var(--rf-ink); }
+.rf-marketing-nav nav a:hover::after { transform: scaleX(1); }
+.rf-marketing-nav nav a.is-active { color: var(--rf-ink); font-weight: 600; }
+.rf-marketing-nav nav a.is-active::after { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  .rf-marketing-nav nav a::after { transition: none; }
+}
+.rf-marketing-nav .spacer { margin-left: auto; }
+.rf-marketing-nav .actions { display: flex; gap: 9px; align-items: center; }
+
+.rf-footer {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: radial-gradient(90% 120% at 100% 0%, #16305e 0%, var(--rf-navy) 45%, var(--rf-navy-2) 100%);
+  color: #b9c6da; padding: 60px 0 30px; font-size: 13.5px; border-top: 3px solid var(--rf-mint);
+}
+.rf-site .rf-footer a, .rf-footer a { color: #d3dceb; text-decoration: none; display: block; padding: 4px 0; }
+.rf-site .rf-footer a:hover, .rf-footer a:hover { color: #fff; text-decoration: underline; text-decoration-color: var(--rf-mint); text-underline-offset: 3px; }
+.rf-footer h5 { color: var(--rf-brass-2); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 12px; }
+.rf-footer .cols { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 32px; padding-bottom: 30px; border-bottom: 1px solid rgba(142, 220, 180, .2); }
+.rf-footer .legal { padding-top: 22px; font-size: 11.5px; color: #8e9db4; line-height: 1.8; }
+.rf-footer .legal strong { color: #e6ecf5; }
+
+.wrap { width: min(1180px, 100% - 44px); margin-inline: auto; }
+
+/* ==========================================================================
+   Statement, printable
+   ========================================================================== */
+
+.rf-statement { background: #fff; padding: 34px; border: 1px solid var(--rf-line); border-radius: var(--rf-radius); }
+.rf-statement-head { display: flex; justify-content: space-between; gap: 24px; border-bottom: 2px solid var(--rf-navy); padding-bottom: 18px; margin-bottom: 20px; }
+.rf-statement-head h2 { font-family: var(--rf-display); margin: 0 0 4px; font-size: 22px; }
+.rf-statement-head .addr { font-size: 12.5px; color: var(--rf-ink-3); line-height: 1.6; }
+.rf-statement-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+.rf-statement-summary .box { background: var(--rf-surface-2); border: 1px solid var(--rf-line-2); border-radius: var(--rf-radius-sm); padding: 12px 14px; }
+.rf-statement-summary .k { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--rf-ink-3); }
+.rf-statement-summary .v { font-family: var(--rf-mono); font-size: 16px; font-weight: 500; white-space: nowrap; }
+
+@media print {
+  .rf-side, .rf-top, .rf-toasts, .rf-no-print { display: none !important; }
+  body.rf-app { background: #fff; }
+  .rf-content { padding: 0; }
+  .rf-statement { border: 0; padding: 0; }
+  .rf-table th { background: #fff; }
+  a[href]::after { content: ""; }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1080px) {
+  .rf-grid.cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rf-grid.side, .rf-grid.side-left { grid-template-columns: minmax(0, 1fr); }
+  .rf-footer .cols { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .rf-auth-wrap { grid-template-columns: minmax(0, 1fr); }
+  .rf-auth-aside { display: none; }
+  /* The aside took the lockup with it, so the panel carries it instead. */
+  .rf-auth-panel { flex-direction: column; justify-content: flex-start; padding: 28px 20px 48px; }
+  a.rf-auth-brand { display: flex; }
+  .rf-auth-box h1 { font-size: 26px; }
+  .rf-side {
+    position: fixed; left: 0; top: 0; bottom: 0;
+    transform: translateX(-100%); transition: transform .22s ease;
+    box-shadow: var(--rf-shadow-lg);
+  }
+  .rf-side.is-open { transform: none; }
+  /* The Menu tab opens the drawer now, so the header keeps its width for the
+     one thing a phone header is for: saying which screen you are on. */
+  .rf-burger { display: none; }
+  .rf-content { padding: 18px 16px calc(84px + env(safe-area-inset-bottom)); }
+  .rf-top { padding: 11px 16px; }
+
+  /* The bottom bar.
+
+     Four places and a way back to the rest, thumb-height, over a pane of the
+     same glass as the header. It sits below the drawer and below the scrim,
+     so opening the menu covers it rather than leaving it floating over the
+     dimmed page. */
+  .rf-tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 38;
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    background: var(--rf-surface);
+    border-top: 1px solid var(--rf-line);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .rf-tabbar {
+      background: rgba(255, 255, 255, .94);
+      -webkit-backdrop-filter: var(--rf-glass-blur);
+      backdrop-filter: var(--rf-glass-blur);
+    }
+  }
+  .rf-tabbar a, .rf-tabbar button {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    padding: 9px 2px 10px; min-height: 56px;
+    border: 0; background: none; cursor: pointer;
+    color: var(--rf-ink-3); text-decoration: none;
+    font: 500 10.5px/1.1 var(--rf-sans); letter-spacing: .01em;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .rf-tabbar svg { opacity: .75; }
+  .rf-tabbar .is-active { color: var(--rf-navy); }
+  .rf-tabbar .is-active svg { opacity: 1; }
+  .rf-tabbar span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rf-grid.cols-3, .rf-grid.cols-2 { grid-template-columns: minmax(0, 1fr); }
+  .rf-row, .rf-row.three, .rf-row.four { grid-template-columns: minmax(0, 1fr); }
+  .rf-statement-summary { grid-template-columns: repeat(2, 1fr); }
+  .rf-marketing-nav nav { display: none; }
+  .rf-scrim { position: fixed; inset: 0; background: rgba(8, 16, 30, .5); z-index: 39; }
+
+  /* On a narrow screen the copy fills the width, so the scrim has to cover it
+     rather than clearing to the right. */
+  .rf-hero.has-photo::before {
+    background:
+      linear-gradient(180deg, rgba(8, 20, 38, .62) 0%, rgba(10, 26, 48, .76) 100%),
+      linear-gradient(to top, rgba(8, 20, 38, .5) 0%, transparent 58%);
+  }
+  .rf-hero-stats { padding: 18px 18px; gap: 14px; }
+  /* The watermark would otherwise push the page sideways. */
+  .rf-hero-mark { right: -120px; opacity: .05; }
+  .rf-hero-actions .rf-btn { flex: 1 1 auto; justify-content: center; }
+}
+
+/* The nav at phone width.
+
+   The bank's full name plus two buttons does not fit across 390px, and the
+   name was wrapping onto three lines while the buttons ran off the edge. The
+   name shortens to the mark and "Rockfeild", and "Open an account" gives way
+   to Sign in - the page below is one long argument for opening an account, so
+   the button is not the only route to it. */
+@media (max-width: 620px) {
+  .rf-marketing-nav .inner { gap: 12px; padding: 10px 0; }
+  .rf-marketing-nav .brandline strong { font-size: 15px; white-space: nowrap; }
+  .rf-marketing-nav .brandline .rf-full-name { display: none; }
+  .rf-marketing-nav .brandline small { display: none; }
+  .rf-marketing-nav .actions .rf-btn.ghost { display: none; }
+}
+
+@media (max-width: 620px) {
+  .rf-statement { padding: 18px; }
+  .rf-statement-head { flex-direction: column; gap: 14px; }
+  .rf-footer .cols { grid-template-columns: minmax(0, 1fr); }
+  .rf-modal-foot { flex-direction: column-reverse; }
+  .rf-modal-foot .rf-btn { width: 100%; }
+
+  /* The header, at phone width.
+
+     The greeting and its sub-line were taking three lines of a 390px screen
+     and squeezing the buttons beside them. A phone header carries the name of
+     the screen; the sentence under it is desktop furniture. */
+  .rf-top { padding: 10px 14px; gap: 10px; }
+  .rf-top > div { min-width: 0; }
+  .rf-top h1 { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rf-top .rf-top-sub { display: none; }
+  .rf-top-actions { gap: 6px; }
+
+  /* The headline figures.
+
+     Four cards down a single column spent 440px before the first account
+     appeared. The total leads, full width, because it is the number the app
+     was opened for; the rest tile two-up under it. */
+  .rf-grid.cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .rf-stat { padding: 13px 14px; }
+  .rf-stat .k { font-size: 10.5px; letter-spacing: .08em; }
+  .rf-stat .v { font-size: 20px; margin: 5px 0 1px; }
+  .rf-stat .d { font-size: 11.5px; }
+
+  /* The green balance card above leads on a phone; these tile two-up. */
+
+  /* Account tiles: the balance is the point, so it keeps its size. */
+  .rf-acct { padding: 15px 16px; }
+  .rf-acct .meta { gap: 10px; flex-wrap: wrap; }
+
+  /* A section heading on a phone is a label, not a display line. */
+  .rf-content h2 { font-size: 16px; }
+
+  /* Safari zooms the whole page when a control it focuses is under 16px, and
+     the page never quite comes back. Nothing marks a web page out from an app
+     faster. */
+  .rf-input, .rf-select, .rf-textarea { font-size: 16px; }
+
+  /* The transaction filters: seven stacked fields put the first transaction
+     below the fold twice over. Search keeps the width it needs; the rest pair
+     off. */
+  .rf-app [data-filters] { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 10px; }
+  .rf-app [data-filters] > .rf-field:first-child,
+  .rf-app [data-filters] > .rf-inline,
+  /* Three selects in half a column leaves each one too narrow to read its own
+     placeholder: "M...", "", "Ye...". A date takes the full width. */
+  .rf-app [data-filters] > .rf-field-date { grid-column: 1 / -1; }
+  .rf-app [data-filters] .rf-btn { flex: 1 1 auto; justify-content: center; }
+
+  /* The header action duplicates a tab six inches lower. */
+  .rf-top-actions > .rf-btn { display: none; }
+
+  /* A label on the left and three buttons on the right is a desktop shape.
+     At this width the buttons were being squeezed into the label; let the pair
+     break onto two lines instead of fighting over one. */
+  .rf-spread { flex-wrap: wrap; }
+  .rf-card-head { flex-wrap: wrap; padding: 13px 15px; }
+}
+
+/* Tables, when the column they sit in is too narrow for them.
+
+   A seven-column table in 390px wraps every description onto four lines and
+   pushes the amount off the right edge, where nobody scrolls to find it. It
+   is not only a phone problem: the dashboard's activity table lives in two
+   thirds of the content column, so on a 1100px laptop it was already running
+   past the card and into the horizontal scroll that .rf-table-wrap keeps as a
+   backstop.
+
+   So the columns a phone can do without are marked `opt` in the markup, and
+   they leave as soon as the table is cramped rather than only on a phone.
+   What is left is what a banking app shows: what it was, when, how much.
+
+   The action buttons at the end of a row stop being a single nowrap line at
+   the same point - three ghost buttons side by side are the widest column on
+   half these tables. */
+@media (max-width: 1180px) {
+  .rf-table .opt { display: none; }
+  .rf-table td.rf-right { white-space: normal; }
+  .rf-table td.rf-right .rf-inline { justify-content: flex-end; }
+}
+
+/* And the same again where the screen is wide but the column is not: the
+   dashboard's activity table gets two thirds of the content width on any
+   monitor, and the bill payees table shares its row with a form. Asking the
+   viewport about either of those gets the wrong answer. */
+@container rf-table (max-width: 700px) {
+  .rf-table .opt { display: none; }
+  .rf-table td.rf-right { white-space: normal; }
+  .rf-table td.rf-right .rf-inline { justify-content: flex-end; }
+}
+
+@media (max-width: 720px) {
+  /* A second tier: the column that still leaves a trimmed table a couple of
+     dozen pixels too wide on a 360px phone, and only there. */
+  .rf-table .opt-sm { display: none; }
+  .rf-table { font-size: 12.8px; }
+  .rf-table th { padding: 8px; font-size: 10px; letter-spacing: .07em; }
+  .rf-table td { padding: 9px 8px; }
+  .rf-table td.num, .rf-table th.num { font-size: 12.5px; }
+  .rf-table .sub { font-size: 11px; }
+  .rf-table .rf-btn.sm { min-height: 30px; padding: 0 9px; font-size: 12px; }
+  /* The date is a column of its own on a wide screen and a stamp beside the
+     description on a narrow one. Stacking the year under the day keeps it to
+     about fifty pixels, which is the difference between the amount landing
+     inside the card and being pushed off its right edge. */
+  .rf-table td.rf-nowrap { line-height: 1.25; }
+}
+
+/* ==========================================================================
+   One theme. The bank is always presented light - white surfaces over a soft
+   grey ground - whatever the device prefers, so contrast is designed once and
+   holds everywhere.
+   ========================================================================== */
+:root { color-scheme: light; }
+
+
+/* ==========================================================================
+   Pieces the public site inherits from the template's scripts.
+
+   /js/main.js, /js/careers.js, /js/apply.js and /js/chat.js write markup with
+   their own class names. The bank pages no longer load the template's
+   stylesheet, so those class names are dressed here instead - in the bank's
+   palette, and nowhere near the application shell above.
+   ========================================================================== */
+
+/* Field validation, written by the form scripts. */
+.rf-site .err { font-size: 12px; color: var(--rf-debit); margin-top: 5px; }
+.rf-site .field.invalid .rf-input,
+.rf-site .field.invalid .rf-select,
+.rf-site .field.invalid .rf-textarea { border-color: var(--rf-debit); box-shadow: 0 0 0 3px rgba(163, 53, 43, .12); }
+.rf-site .form-status { margin: 4px 0 12px; min-height: 18px; color: var(--rf-ink-3); }
+.rf-site .form-status.ok { color: var(--rf-credit); }
+.rf-site .form-status.bad { color: var(--rf-debit); }
+.rf-site .honeypot { position: absolute; left: -9999px; }
+
+/* The role list on /careers, written by /js/careers.js. */
+.rf-site .roles { display: grid; gap: 14px; }
+.rf-site .role {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 20px; align-items: center;
+  background: var(--rf-surface); border: 1px solid var(--rf-line); border-radius: var(--rf-radius);
+  padding: 20px 22px; box-shadow: var(--rf-shadow);
+}
+.rf-site .role .team { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--rf-brass); font-weight: 600; }
+.rf-site .role h3 { font-family: var(--rf-display); font-size: 17px; margin: 5px 0 6px; letter-spacing: 0; }
+.rf-site .role .role-sum { margin: 0; color: var(--rf-ink-3); font-size: 14px; max-width: 62ch; }
+.rf-site .role .role-meta { font-size: 12.5px; color: var(--rf-ink-3); text-align: right; white-space: nowrap; }
+.rf-site .role .apply {
+  display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+  background: var(--rf-navy); color: #fff; padding: 9px 16px; border-radius: 999px;
+  font: 600 13.5px/1 var(--rf-sans); white-space: nowrap;
+}
+.rf-site .role .apply:hover { background: var(--rf-navy-2); }
+.rf-site .arw { font-size: 1.1em; line-height: 1; }
+
+/* The role summary beside the application form, written by /js/apply.js. */
+.rf-site #apply-role-meta .row { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; border-bottom: 1px solid var(--rf-line-2); font-size: 13.5px; }
+.rf-site #apply-role-meta .k { color: var(--rf-ink-3); }
+.rf-site #apply-role-meta .val { font-weight: 500; }
+
+@media (max-width: 800px) {
+  .rf-site .role { grid-template-columns: minmax(0, 1fr); }
+  .rf-site .role .role-meta { text-align: left; }
+}
+
+/* ---------------------------------------------------------- live chat --- */
+
+.chat { position: fixed; right: 20px; bottom: 20px; z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.chat-toggle {
+  width: 54px; height: 54px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--rf-navy); color: var(--rf-brass-2); display: grid; place-items: center;
+  box-shadow: 0 0 0 3px rgba(10, 125, 87, .55), var(--rf-shadow-lg); transition: transform .15s ease, background .15s ease;
+}
+.chat-toggle:hover { background: var(--rf-navy-2); transform: translateY(-2px); }
+.chat-toggle .i-close { display: none; }
+.chat-toggle[aria-expanded="true"] .i-open { display: none; }
+.chat-toggle[aria-expanded="true"] .i-close { display: block; }
+
+.chat-panel {
+  width: min(370px, calc(100vw - 32px)); height: min(520px, calc(100vh - 130px));
+  background: var(--rf-surface); border: 1px solid var(--rf-line); border-radius: 18px;
+  box-shadow: var(--rf-shadow-lg); display: flex; flex-direction: column; overflow: hidden;
+}
+.chat-panel[hidden] { display: none; }
+.chat-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: linear-gradient(135deg, #16305e, var(--rf-navy) 60%); color: #fff; border-bottom: 2px solid var(--rf-mint); }
+.chat-head-id { display: flex; align-items: center; gap: 10px; }
+.chat-head-id .dot { width: 8px; height: 8px; border-radius: 50%; background: #45c48a; box-shadow: 0 0 0 3px rgba(69, 196, 138, .25); }
+.chat-head strong { display: block; font-size: 15px; font-family: var(--rf-headline); font-weight: 700; }
+.chat-head small { display: block; font-size: 11.5px; color: #9fb2cc; }
+.chat-min { margin-left: auto; background: none; border: 0; color: #a9d9c1; font-size: 22px; line-height: 1; cursor: pointer; }
+
+.chat-log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: var(--rf-surface-2); }
+.chat-msg { max-width: 84%; padding: 10px 13px; border-radius: 14px; font-size: 13.8px; line-height: 1.5; white-space: pre-wrap; }
+.chat-msg.agent { background: var(--rf-surface); border: 1px solid var(--rf-line); align-self: flex-start; border-bottom-left-radius: 5px; }
+.chat-msg.user { background: var(--rf-navy); color: #fff; align-self: flex-end; border-bottom-right-radius: 5px; }
+.chat-msg.typing { color: var(--rf-ink-3); font-style: italic; }
+
+.chat-form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--rf-line-2); background: var(--rf-surface); }
+/* A form control does not inherit `color` - it takes the browser's own, which
+   is black. On the dark theme that is black type in a near-black field: what
+   the visitor types disappears as they type it. Every other input in the
+   application sets this; the chat box was the one that did not. */
+.chat-form input {
+  flex: 1; border: 1px solid var(--rf-line); border-radius: 999px; padding: 10px 14px;
+  font: 400 14px/1.4 var(--rf-sans); background: var(--rf-surface); color: var(--rf-ink);
+}
+.chat-form input::placeholder { color: var(--rf-ink-4); opacity: 1; }
+.chat-form input:focus { outline: none; border-color: var(--rf-navy-3); box-shadow: 0 0 0 3px rgba(10, 125, 87, .18); }
+.chat-form button { border: 0; background: var(--rf-navy); color: #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center; }
+.chat-form button:hover { background: var(--rf-navy-2); }
+
+@media (max-width: 520px) {
+  .chat { right: 12px; bottom: 12px; }
+  .chat-panel { height: min(70vh, 520px); }
+}
+
+/* ==========================================================================
+   Rockfeild National - landing page, headings and motion
+   A light, open home page: the promise on the left, the app itself on the
+   right (a phone and a card drawn in CSS, so they stay sharp and on-brand),
+   then the people the bank is for.
+   ========================================================================== */
+
+/* Headings: one sans, heavy and tight. */
+.rf-section h2, .rf-auth-box h1, .rf-auth-aside h2, .rf-hero h1 { font-family: var(--rf-headline); font-weight: 800; letter-spacing: -.02em; }
+.rf-section h2 { color: var(--rf-navy); }
+.rf-hero h1 { font-size: clamp(40px, 6vw, 72px); }
+.rf-product .rate, .rf-hero-stats .v, .rf-stat .v { font-weight: 600; letter-spacing: -.01em; }
+.rf-eyebrow { letter-spacing: .18em; font-weight: 700; }
+.rf-site .rf-section .rf-eyebrow { color: var(--rf-brass); }
+
+/* Nav, as in the mockup: the full lockup, plain links, a text log-in and a
+   single green call to action. */
+.hs-nav-logo { display: block; height: 40px; width: auto; }
+.rf-marketing-nav nav a { font-weight: 500; color: var(--rf-ink); }
+@media (max-width: 720px) { .hs-nav-logo { height: 32px; } .rf-marketing-nav .hs-login { display: none; } }
+
+/* ----------------------------------------------------------------- hero -- */
+.hs-home {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f7 100%);
+  padding-top: clamp(40px, 7vh, 88px);
+}
+.hs-home-bg span { position: absolute; border-radius: 50%; filter: blur(70px); z-index: -1; pointer-events: none; }
+.hs-home-bg span:nth-child(1) { width: 640px; height: 640px; right: -160px; top: -200px; background: rgba(10, 125, 87, .14); animation: hs-drift-a 24s ease-in-out infinite alternate; }
+.hs-home-bg span:nth-child(2) { width: 520px; height: 520px; left: -220px; bottom: -140px; background: rgba(12, 29, 74, .07); animation: hs-drift-b 30s ease-in-out infinite alternate; }
+
+.hs-home-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
+.hs-kicker { display: block; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--rf-brass); margin-bottom: 14px; }
+.hs-home .hs-home-title, .hs-home h1 {
+  margin: 0 0 20px; font-weight: 800; letter-spacing: -.035em; line-height: 1.02;
+  font-size: clamp(40px, 5vw, 68px); color: var(--rf-ink);
+}
+.hs-grad { background: linear-gradient(90deg, #0b1f44 0%, #24427a 55%, #0a5a40 100%); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% 100%; animation: hs-grad 8s ease-in-out infinite alternate; }
+.hs-lede { font-size: clamp(17px, 1.6vw, 19px); line-height: 1.6; color: var(--rf-ink-2); max-width: 50ch; margin: 0 0 28px; }
+.hs-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; }
+.hs-cta { position: relative; overflow: hidden; padding-inline: 28px; box-shadow: 0 14px 30px -14px rgba(11, 31, 68, .7); }
+.hs-cta svg { transition: transform .3s var(--rf-ease); }
+.hs-cta:hover svg { transform: translateX(4px); }
+.hs-cta::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .4), transparent);
+  transform: skewX(-18deg); animation: hs-shine 5.5s ease-in-out infinite 1.4s;
+}
+.hs-textlink { font-weight: 600; color: var(--rf-navy); text-decoration: none; border-bottom: 2px solid rgba(11, 31, 68, .25); padding-bottom: 2px; transition: border-color .2s; }
+.hs-textlink:hover { border-color: var(--rf-navy); }
+.hs-textlink.light { color: #fff; border-color: rgba(255, 255, 255, .4); }
+.hs-textlink.light:hover { border-color: #fff; }
+
+.hs-features { list-style: none; padding: 0; margin: clamp(32px, 5vh, 52px) 0 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.hs-features h3 { margin: 12px 0 4px; font-size: 15px; font-weight: 700; color: var(--rf-ink); }
+.hs-features p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--rf-ink-3); }
+.hs-ic {
+  display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+  background: var(--rf-brass-soft); color: var(--rf-brass); transition: transform .35s var(--rf-ease), background .35s;
+}
+.hs-features li:hover .hs-ic { transform: translateY(-4px) rotate(-6deg); background: #cdeedd; }
+
+/* The visual: two translucent slabs, a phone, a card, a toast. */
+.hs-home-visual { position: relative; min-height: 560px; display: grid; place-items: center; }
+.hs-slab { position: absolute; width: 150px; height: 360px; background: linear-gradient(180deg, rgba(10, 125, 87, .5), rgba(10, 125, 87, .18)); transform: skewY(-28deg); border-radius: 6px; z-index: 0; }
+.hs-slab-a { left: 4%; top: 30%; animation: hs-float 9s ease-in-out infinite; }
+.hs-slab-b { right: 6%; top: 8%; height: 300px; background: linear-gradient(180deg, rgba(11, 31, 68, .4), rgba(10, 125, 87, .12)); animation: hs-float 11s ease-in-out infinite -4s; }
+
+.hs-phone {
+  position: relative; z-index: 2; width: 270px; height: 548px; border-radius: 44px; padding: 11px;
+  background: linear-gradient(145deg, #fbfcfd 0%, #e4e8ec 55%, #cfd5dc 100%); box-shadow: 0 50px 90px -40px rgba(12, 29, 74, .45), inset 0 0 0 1px #c3c9d1, inset 0 0 0 4px #f4f6f8;
+  animation: hs-phone-in 1.2s var(--rf-ease) both .2s, hs-float 7s ease-in-out infinite 1.4s;
+}
+.hs-notch { position: absolute; top: 18px; left: 50%; width: 86px; height: 22px; transform: translateX(-50%); background: #262c33; border-radius: 20px; z-index: 3; }
+.hs-screen { position: relative; width: 100%; height: 100%; border-radius: 34px; overflow: hidden; background: #f7f9fa; display: flex; flex-direction: column; font-size: 11px; color: var(--rf-ink); }
+.hs-screen-top { background: linear-gradient(160deg, #16305e, #071634); color: #fff; padding: 14px 18px 40px; }
+.hs-status { display: flex; justify-content: space-between; font-weight: 700; font-size: 11px; margin-bottom: 18px; padding: 0 4px; }
+.hs-sig { display: inline-flex; gap: 2px; align-items: flex-end; }
+.hs-sig i { display: block; width: 3px; background: #fff; border-radius: 1px; }
+.hs-sig i:nth-child(1) { height: 4px; } .hs-sig i:nth-child(2) { height: 6px; } .hs-sig i:nth-child(3) { height: 8px; }
+.hs-app-brand { display: flex; align-items: center; gap: 7px; margin-bottom: 12px; }
+.hs-app-brand img { height: 21px; width: auto; }
+.hs-app-brand strong, .hs-card-brand strong { display: block; font-size: 11px; letter-spacing: .06em; font-weight: 800; }
+.hs-app-brand small, .hs-card-brand small { display: block; font-size: 6.5px; letter-spacing: .26em; opacity: .85; }
+.hs-balance { font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
+.hs-delta { margin-top: 6px; font-size: 10.5px; color: #d9e2ef; }
+.hs-delta span { display: inline-flex; align-items: center; gap: 3px; background: rgba(255, 255, 255, .16); padding: 2px 7px; border-radius: 6px; margin-right: 4px; color: #fff; font-weight: 700; }
+.hs-sheet { flex: 1; background: #fff; margin-top: -24px; border-radius: 20px 20px 0 0; padding: 14px 14px 0; display: flex; flex-direction: column; }
+.hs-quick { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; gap: 4px; margin-bottom: 14px; }
+.hs-quick span { font-size: 9.5px; color: var(--rf-ink-2); }
+.hs-quick i { display: grid; place-items: center; width: 36px; height: 36px; margin: 0 auto 5px; border-radius: 50%; background: var(--rf-brass-soft); color: var(--rf-navy); }
+.hs-tx-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.hs-tx-head strong { font-size: 11.5px; }
+.hs-tx-head em { font-style: normal; color: var(--rf-navy); font-weight: 700; font-size: 10px; }
+.hs-tx { list-style: none; margin: 0; padding: 0; }
+.hs-tx li { display: flex; align-items: center; gap: 9px; padding: 7px 0; border-bottom: 1px solid #e9edf1; opacity: 0; animation: hs-rise .6s var(--rf-ease) both; }
+.hs-tx li:nth-child(1) { animation-delay: 1.1s; } .hs-tx li:nth-child(2) { animation-delay: 1.25s; }
+.hs-tx li:nth-child(3) { animation-delay: 1.4s; } .hs-tx li:nth-child(4) { animation-delay: 1.55s; }
+.hs-tx i { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: #eff2f5; color: var(--rf-ink-2); flex: none; }
+.hs-tx span { flex: 1; font-weight: 600; font-size: 10.5px; }
+.hs-tx small { display: block; font-weight: 400; color: var(--rf-ink-3); font-size: 9px; }
+.hs-tx b { font-size: 10.5px; font-weight: 700; }
+.hs-tx b.in { color: var(--rf-credit); }
+.hs-tabs { margin-top: auto; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; padding: 8px 0 14px; border-top: 1px solid #e9edf1; }
+.hs-tabs span { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 8.5px; color: var(--rf-ink-3); }
+.hs-tabs span.on { color: var(--rf-navy); font-weight: 700; }
+
+.hs-card3d { position: absolute; z-index: 3; right: -2%; bottom: 12%; perspective: 900px; animation: hs-card-in 1.2s var(--rf-ease) both .6s; }
+.hs-card-face {
+  position: relative; width: 250px; height: 158px; border-radius: 16px; padding: 18px; color: #fff;
+  background: radial-gradient(120% 140% at 0% 0%, #24427a 0%, #0b1f44 45%, #071634 100%);
+  box-shadow: 0 30px 60px -24px rgba(7, 22, 52, .7), inset 0 1px 0 rgba(255, 255, 255, .2);
+  transform: rotateY(-14deg) rotateX(8deg) rotateZ(-8deg); transform-style: preserve-3d;
+  animation: hs-card-tilt 8s ease-in-out infinite 1.8s; overflow: hidden;
+}
+.hs-card-face::before { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .18) 45%, transparent 60%); background-size: 250% 100%; animation: hs-sheen 6s ease-in-out infinite 2s; }
+.hs-card-brand { display: flex; align-items: center; gap: 7px; }
+.hs-card-brand img { height: 25px; width: auto; }
+.hs-chipset { position: absolute; left: 18px; top: 66px; width: 36px; height: 27px; border-radius: 6px; background: linear-gradient(135deg, #e9d9a6, #b9a467); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .15); }
+.hs-nfc { position: absolute; right: 18px; top: 66px; opacity: .85; }
+.hs-card-type { position: absolute; right: 18px; bottom: 14px; font-weight: 800; font-size: 15px; letter-spacing: .12em; }
+
+.hs-toast {
+  position: absolute; z-index: 4; left: -4%; top: 56%; display: flex; align-items: center; gap: 10px;
+  background: rgba(255, 255, 255, .86); border: 1px solid rgba(255, 255, 255, .9); border-radius: 16px; padding: 11px 15px;
+  box-shadow: 0 20px 40px -22px rgba(12, 29, 74, .45); font-size: 12.5px; color: var(--rf-ink);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  animation: hs-pop .7s var(--rf-ease) both 1.9s, hs-float 6s ease-in-out infinite 2.6s;
+}
+.hs-toast i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--rf-credit); color: #fff; }
+.hs-toast strong { display: block; font-weight: 700; }
+.hs-toast small { display: block; color: var(--rf-ink-3); }
+
+/* Trust strip. */
+.hs-trust { margin-top: clamp(24px, 4vh, 48px); background: var(--rf-surface); border-top: 1px solid var(--rf-line); border-bottom: 1px solid var(--rf-line); padding: 26px 0 30px; }
+.hs-trust-k { text-align: center; margin: 0 0 18px; font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--rf-brass); }
+.hs-trust-row { display: grid; grid-template-columns: repeat(4, 1fr); }
+.hs-trust-row > div { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 6px 12px; }
+.hs-trust-row > div + div { border-left: 1px solid var(--rf-line); }
+.hs-trust-row .hs-ic { background: transparent; width: auto; height: auto; color: var(--rf-emerald-2); }
+.hs-trust-row b { display: block; font-family: var(--rf-headline); font-size: 28px; font-weight: 800; color: var(--rf-navy); letter-spacing: -.01em; line-height: 1.1; }
+.hs-trust-row b.sm { font-size: 20px; }
+.hs-trust-row small { display: block; color: var(--rf-ink-3); font-size: 13.5px; }
+
+/* --------------------------------------------------- family split panel -- */
+.hs-split-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: clamp(32px, 6vw, 84px); align-items: center; }
+.hs-photo { position: relative; margin: 0; }
+.hs-photo img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%); }
+.hs-photo::before { content: ""; position: absolute; inset: 22px -22px -22px 22px; clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%); background: linear-gradient(135deg, var(--rf-mint), #cdeedd); z-index: -1; }
+.hs-float-note {
+  position: absolute; left: -24px; bottom: 32px; display: flex; gap: 12px; align-items: center;
+  background: #fff; border-radius: 18px; padding: 14px 18px; min-width: 250px;
+  box-shadow: 0 24px 48px -24px rgba(12, 29, 74, .45); animation: hs-float 7s ease-in-out infinite;
+}
+.hs-float-note i { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--rf-brass-soft); color: var(--rf-navy); flex: none; }
+.hs-float-note strong { display: block; font-size: 13.5px; color: var(--rf-ink); }
+.hs-float-note small { display: block; font-size: 12px; color: var(--rf-ink-3); margin-top: 4px; }
+.hs-bar { display: block; height: 6px; border-radius: 6px; background: #e3ece8; margin-top: 8px; overflow: hidden; }
+.hs-bar span { display: block; height: 100%; width: var(--w); border-radius: inherit; background: linear-gradient(90deg, var(--rf-emerald-2), var(--rf-brass-2)); transform-origin: left; animation: hs-fill 1.6s var(--rf-ease) both .4s; }
+.hs-checks { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 12px; }
+.hs-checks li { display: flex; gap: 10px; align-items: flex-start; color: var(--rf-ink-2); }
+.hs-checks svg { flex: none; margin-top: 3px; width: 20px; height: 20px; padding: 3px; border-radius: 50%; background: var(--rf-navy); color: var(--rf-brass-2); }
+
+/* ------------------------------------------------------ mobile photo band -- */
+.hs-band { position: relative; overflow: hidden; isolation: isolate; padding: clamp(80px, 12vw, 150px) 0; color: #fff; }
+/* As the landing hero it fills the first screen, with the copy centred in it. */
+.hs-band-hero { min-height: min(calc(100vh - 66px), 760px); display: flex; align-items: center; padding: clamp(64px, 10vh, 120px) 0; }
+.hs-band-hero h1 { font-size: clamp(40px, 5.4vw, 68px); font-weight: 800; letter-spacing: -.035em; line-height: 1.04; margin: 0 0 18px; color: #fff; }
+.hs-band-hero .hs-band-photo { animation: hs-settle 2.4s var(--rf-ease) both; }
+@keyframes hs-settle { from { transform: scale(1.1); } to { transform: scale(1); } }
+.hs-home-title { margin: 0 0 20px; font-weight: 800; letter-spacing: -.035em; line-height: 1.04; font-size: clamp(38px, 4.6vw, 62px); color: var(--rf-ink); }
+.hs-band-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 30%; z-index: -2; transform: scale(1.08); transition: transform 1.6s var(--rf-ease); }
+.hs-band.is-in .hs-band-photo { transform: scale(1); }
+.hs-band::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(95deg, rgba(8, 22, 42, .92) 0%, rgba(14, 36, 66, .78) 38%, rgba(14, 36, 66, .2) 70%, transparent 100%); }
+.hs-band-copy { max-width: 660px; }
+.hs-band .rf-eyebrow { color: var(--rf-brass-2); }
+.hs-band h2 { font-size: clamp(32px, 4vw, 50px); font-weight: 800; letter-spacing: -.03em; line-height: 1.08; margin: 0 0 16px; }
+.hs-band p { color: #d9e2ef; font-size: 17px; line-height: 1.6; margin: 0 0 28px; }
+
+/* --------------------------------------------------------------- motion -- */
+.hs-in { animation: hs-rise .9s var(--rf-ease) both; animation-delay: var(--d, 0ms); }
+.hs-motion [data-hs-reveal] { opacity: 0; transform: translateY(26px); transition: opacity .8s var(--rf-ease), transform .8s var(--rf-ease); transition-delay: var(--hs-delay, 0ms); }
+.hs-motion [data-hs-reveal].is-in { opacity: 1; transform: none; }
+.rf-card, .rf-product { transition: transform .35s var(--rf-ease), box-shadow .35s var(--rf-ease); }
+.rf-site .rf-card:hover, .rf-site .rf-product:hover { transform: translateY(-4px); box-shadow: var(--rf-shadow-hover); }
+
+@keyframes hs-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes hs-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.hs-slab-a, .hs-slab-b { animation-name: hs-slab; }
+@keyframes hs-slab { 0%, 100% { transform: skewY(-28deg) translateY(0); } 50% { transform: skewY(-28deg) translateY(-14px); } }
+@keyframes hs-phone-in { from { opacity: 0; transform: translateY(60px) rotate(4deg); } to { opacity: 1; transform: none; } }
+@keyframes hs-card-in { from { opacity: 0; transform: translate(60px, 30px); } to { opacity: 1; transform: none; } }
+@keyframes hs-card-tilt { 0%, 100% { transform: rotateY(-14deg) rotateX(8deg) rotateZ(-8deg); } 50% { transform: rotateY(-4deg) rotateX(2deg) rotateZ(-5deg) translateY(-8px); } }
+@keyframes hs-sheen { 0%, 60% { background-position: 150% 0; } 100% { background-position: -100% 0; } }
+@keyframes hs-pop { from { opacity: 0; transform: scale(.85) translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes hs-shine { 0%, 70% { left: -60%; } 100% { left: 130%; } }
+@keyframes hs-grad { from { background-position: 0% 0; } to { background-position: 100% 0; } }
+@keyframes hs-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes hs-drift-a { to { transform: translate(-80px, 60px) scale(1.1); } }
+@keyframes hs-drift-b { to { transform: translate(90px, -40px) scale(.92); } }
+
+@media (max-width: 1080px) {
+  .hs-features { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+  .hs-home-grid, .hs-split-grid { grid-template-columns: 1fr; }
+  .hs-home-visual { min-height: 520px; }
+  .hs-trust-row { grid-template-columns: repeat(2, 1fr); row-gap: 18px; }
+  .hs-trust-row > div:nth-child(3) { border-left: 0; }
+  .hs-float-note { left: 12px; bottom: -28px; }
+  .hs-photo { margin-bottom: 28px; }
+  .hs-photo::before { inset: 12px -10px -12px 12px; }
+}
+@media (max-width: 520px) {
+  .hs-features { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .hs-phone { width: 236px; height: 480px; }
+  .hs-card-face { width: 200px; height: 126px; padding: 14px; }
+  .hs-chipset { top: 52px; } .hs-nfc { top: 52px; }
+  .hs-home-visual { min-height: 540px; }
+  .hs-card3d { right: -6%; bottom: -2%; }
+  .hs-card-face { transform: rotateY(-14deg) rotateX(8deg) rotateZ(-8deg) scale(.86); }
+  .hs-toast { left: -4%; top: 40%; font-size: 11.5px; padding: 9px 12px; }
+  .hs-trust-row { grid-template-columns: 1fr; }
+  .hs-trust-row > div { justify-content: flex-start; border-left: 0 !important; }
+  .hs-float-note { min-width: 0; right: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hs-in, .hs-phone, .hs-card3d, .hs-card-face, .hs-card-face::before, .hs-toast, .hs-slab,
+  .hs-cta::after, .hs-grad, .hs-band-hero .hs-band-photo, .hs-tx li, .hs-bar span, .hs-float-note, .hs-home-bg span { animation: none !important; }
+  .hs-tx li { opacity: 1; }
+  .hs-band-photo { transform: none; transition: none; }
+  .hs-motion [data-hs-reveal] { opacity: 1; transform: none; transition: none; }
+  .rf-site .rf-card:hover, .rf-site .rf-product:hover, .hs-features li:hover .hs-ic { transform: none; }
+}
+
+/* On the photograph the primary action is white, so it reads at a glance
+   against the green scrim instead of melting into it. */
+.hs-band .hs-cta { --btn-face: #ffffff; --btn-edge: #ffffff; --btn-ink: var(--rf-navy-2); box-shadow: 0 14px 30px -14px rgba(0, 0, 0, .45); }
+.hs-band .hs-cta:hover { --btn-face: #eef1f4; --btn-edge: #eef1f4; }
+
+/* The trust strip stands on its own under the landing hero. */
+.hs-trust-band .hs-trust { margin-top: 0; }
+.rf-card .hs-ic { margin-bottom: 14px; }
+.hs-card-h { font-size: 17px; font-weight: 700; margin: 0 0 6px; color: var(--rf-ink); letter-spacing: -.01em; }
+.rf-card p { color: var(--rf-ink-2); }
+
+/* ==========================================================================
+   Live price ticker (under the nav) and the Invest screen
+   ========================================================================== */
+
+.hs-ticker {
+  position: relative; display: flex; align-items: center; gap: 0;
+  height: 40px; background: #ffffff; border-bottom: 1px solid var(--rf-line);
+  font-size: 13px; color: var(--rf-ink); overflow: hidden;
+}
+.hs-ticker[hidden] { display: none; }
+.hs-ticker-live {
+  flex: none; display: inline-flex; align-items: center; gap: 7px; height: 100%;
+  padding: 0 14px 0 max(16px, calc((100vw - 1240px) / 2 + 20px));
+  font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--rf-navy);
+  background: linear-gradient(90deg, #fff 80%, rgba(255, 255, 255, 0)); position: relative; z-index: 2;
+}
+.hs-ticker-live i { width: 8px; height: 8px; border-radius: 50%; background: #12a36f; box-shadow: 0 0 0 0 rgba(18, 163, 111, .5); animation: hs-pulse 2s ease-out infinite; }
+.hs-ticker-window { flex: 1; min-width: 0; overflow: hidden; height: 100%;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent); }
+.hs-ticker-track { display: inline-flex; align-items: center; height: 100%; white-space: nowrap; animation: hs-marquee var(--hs-ticker-duration, 60s) linear infinite; will-change: transform; }
+.hs-ticker:hover .hs-ticker-track, .hs-ticker:focus-within .hs-ticker-track { animation-play-state: paused; }
+.hs-tick {
+  display: inline-flex; align-items: baseline; gap: 7px; padding: 0 18px; height: 100%; align-items: center;
+  color: inherit; text-decoration: none; border-right: 1px solid var(--rf-line-2); border-radius: 6px;
+  transition: background-color .6s ease;
+}
+.hs-tick:hover { background: var(--rf-surface-3); }
+.hs-tick b { font-weight: 700; }
+.hs-tick .sym { color: var(--rf-ink-3); font-size: 11.5px; font-weight: 600; }
+.hs-tick .px { font-variant-numeric: tabular-nums; font-weight: 600; }
+.hs-tick .chg { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.hs-tick.up .chg { color: #0a7a4f; }
+.hs-tick.down .chg { color: #b42318; }
+.hs-tick.flat .chg { color: var(--rf-ink-3); }
+.hs-tick.flash-up { background: #dcf5e9; }
+.hs-tick.flash-down { background: #fde4e1; }
+.hs-ticker-cta {
+  flex: none; height: 100%; display: inline-flex; align-items: center; padding: 0 max(16px, calc((100vw - 1240px) / 2 + 20px)) 0 16px;
+  font-weight: 700; font-size: 13px; color: var(--rf-navy); text-decoration: none;
+  background: linear-gradient(270deg, #fff 80%, rgba(255, 255, 255, 0)); position: relative; z-index: 2;
+}
+.hs-ticker-cta:hover { text-decoration: underline; }
+.rf-app .hs-ticker { border-radius: 0; }
+.rf-app .hs-ticker-live { padding-left: 20px; }
+.rf-app .hs-ticker-cta { padding-right: 20px; }
+@keyframes hs-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes hs-pulse { 0% { box-shadow: 0 0 0 0 rgba(18, 163, 111, .55); } 80%, 100% { box-shadow: 0 0 0 8px rgba(18, 163, 111, 0); } }
+@media (max-width: 640px) {
+  .hs-ticker-cta { display: none; }
+  .hs-ticker-live { padding-left: 12px; padding-right: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs-ticker-track { animation: none; }
+  .hs-ticker-window { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .hs-ticker-live i { animation: none; }
+}
+
+/* ---- Invest screen ---- */
+.hs-inv-hero { background: linear-gradient(150deg, #16305e 0%, #071634 100%); color: #fff; border-color: transparent; }
+.hs-inv-hero .k { color: #c9d6ea; }
+.hs-inv-hero .v { color: #fff; }
+.hs-inv-hero .d { color: #c9d6ea; }
+.hs-inv-hero .d.up { color: #bff2db; }
+.hs-inv-hero .d.down { color: #ffd2cc; }
+.hs-inv-lede { margin: 0; padding: 0 20px 4px; max-width: 72ch; }
+.hs-assets { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; padding: 14px 20px 20px; }
+.hs-asset {
+  text-align: left; display: flex; flex-direction: column; gap: 10px; padding: 14px 15px; cursor: pointer;
+  background: var(--rf-surface); border: 1px solid var(--rf-line); border-radius: 14px; font: inherit; color: inherit;
+  transition: transform .2s var(--rf-ease), box-shadow .2s var(--rf-ease), border-color .2s;
+}
+.hs-asset:hover:not([disabled]) { transform: translateY(-2px); box-shadow: var(--rf-shadow-hover); border-color: #a9d9c1; }
+.hs-asset:focus-visible { outline: 2px solid var(--rf-navy); outline-offset: 2px; }
+.hs-asset[disabled] { opacity: .55; cursor: not-allowed; }
+.hs-asset-top { display: flex; align-items: center; gap: 10px; }
+.hs-asset-top strong { display: block; font-size: 14.5px; }
+.hs-asset-top small { display: block; font-size: 11.5px; color: var(--rf-ink-3); }
+.hs-asset-ic { display: grid; place-items: center; width: 36px; height: 36px; flex: none; border-radius: 10px; background: var(--rf-navy-soft); color: var(--rf-navy); }
+.hs-asset-px { font-size: 21px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.hs-asset-foot { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; }
+.hs-asset.up .chg { color: #0a7a4f; }
+.hs-asset.down .chg { color: #b42318; }
+.hs-asset .go { color: var(--rf-navy); }
+.hs-asset .held { color: var(--rf-ink-2); font-weight: 600; }
+
+.hs-trades { list-style: none; margin: 0; padding: 6px 20px 16px; }
+.hs-trades li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--rf-line-2); }
+.hs-trades li:last-child { border-bottom: 0; }
+.hs-trade-side { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; padding: 3px 8px; border-radius: 999px; }
+.hs-trade-side.buy { background: var(--rf-credit-soft); color: var(--rf-credit); }
+.hs-trade-side.sell { background: #eef0f3; color: var(--rf-ink-2); }
+.hs-trade-main { flex: 1; min-width: 0; }
+.hs-trade-main strong { display: block; font-size: 13.5px; }
+.hs-trade-main small { display: block; font-size: 12px; color: var(--rf-ink-3); }
+.hs-inv-note { max-width: 90ch; }
+
+/* ---- the convert / sell sheet ---- */
+.hs-sheet { max-width: 460px; }
+.hs-sheet-asset { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 16px; border-radius: 14px; background: var(--rf-surface-3); }
+.hs-sheet-asset strong { display: block; }
+.hs-sheet-asset small { display: block; font-size: 12px; color: var(--rf-ink-3); }
+.hs-sheet-px { margin-left: auto; text-align: right; font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.hs-sheet-px small { display: block; font-size: 12px; font-weight: 700; }
+.hs-sheet-px.up small { color: #0a7a4f; }
+.hs-sheet-px.down small { color: #b42318; }
+.hs-chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+.hs-chips button {
+  font: 700 13px/1 var(--rf-sans); padding: 10px 0; border-radius: 9px; cursor: pointer;
+  background: var(--rf-surface); border: 1px solid var(--rf-line); color: var(--rf-ink);
+  transition: background .15s, border-color .15s, color .15s;
+}
+.hs-chips button:hover { border-color: #8fcfb0; }
+.hs-chips button.is-active { background: var(--rf-navy); border-color: var(--rf-navy); color: #fff; }
+.hs-preview { display: grid; gap: 8px; padding: 14px; margin: 4px 0 14px; border: 1px dashed #c3dccf; border-radius: 12px; background: #fbfcfd; }
+.hs-preview > div { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.hs-preview span { color: var(--rf-ink-3); }
+.hs-preview strong { font-variant-numeric: tabular-nums; }
+.hs-preview p { margin: 0; }
+.hs-warn { color: #b42318; font-size: 13px; font-weight: 600; }
+.hs-block { width: 100%; }
+.hs-center { text-align: center; margin: 10px 0 0; }
+.hs-receipt { padding: 26px 24px 22px; text-align: center; }
+.hs-receipt h3 { margin: 10px 0 6px; font-size: 22px; font-weight: 800; }
+.hs-receipt .rf-dl { text-align: left; margin: 16px 0 18px; }
+.hs-receipt-ok { width: 56px; height: 56px; margin: 0 auto; border-radius: 50%; display: grid; place-items: center; font-size: 26px; color: #fff; background: var(--rf-credit); animation: hs-pop .5s var(--rf-ease) both; }
+
+/* Dashboard: the invest card. */
+.hs-dash-invest .hs-chips { grid-template-columns: repeat(3, 1fr); padding: 0 20px 18px; margin: 0; }
+.hs-dash-invest .hs-chips a { font: 700 12.5px/1 var(--rf-sans); padding: 10px 0; border-radius: 9px; text-align: center; text-decoration: none; background: var(--rf-navy-soft); color: var(--rf-navy-2); }
+.hs-dash-invest .hs-chips a:hover { background: #dde5f1; }
+.hs-dash-invest-v { padding: 4px 20px 12px; }
+.hs-dash-invest-v strong { display: block; font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+.hs-dash-invest-v small { color: var(--rf-ink-3); }
+
+/* ---- signed-in pages: nothing shows until the session is confirmed ---- */
+html.rf-gone body { visibility: hidden; }
+html.rf-booting .rf-shell { visibility: hidden; animation: rf-reveal 0s linear 8s forwards; }
+html.rf-booting body::after {
+  content: ""; position: fixed; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px;
+  border-radius: 50%; border: 3px solid #dde3ec; border-top-color: var(--rf-navy);
+  animation: rf-spin .8s linear infinite, rf-reveal-hide 0s linear 8s forwards;
+}
+@keyframes rf-reveal { to { visibility: visible; } }
+@keyframes rf-reveal-hide { to { visibility: hidden; opacity: 0; } }
+@keyframes rf-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  html.rf-booting body::after { animation: rf-reveal-hide 0s linear 8s forwards; border-top-color: #dde3ec; }
+}
+
+/* ==========================================================================
+   Staff console
+   ========================================================================== */
+
+.hs-section-title { margin: 4px 0 12px; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--rf-ink-3); }
+.hs-attn { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.hs-attn-tile {
+  display: flex; align-items: center; gap: 14px; padding: 16px 16px 16px 18px; text-decoration: none; color: var(--rf-ink);
+  background: var(--rf-surface); border: 1px solid var(--rf-line); border-radius: 16px;
+  transition: transform .2s var(--rf-ease), box-shadow .2s var(--rf-ease), border-color .2s;
+}
+.hs-attn-tile:hover { transform: translateY(-2px); box-shadow: var(--rf-shadow-hover); border-color: #a9d9c1; }
+.hs-attn-tile:focus-visible { outline: 2px solid var(--rf-navy); outline-offset: 2px; }
+.hs-attn-tile .n { min-width: 46px; height: 46px; padding: 0 8px; display: grid; place-items: center; border-radius: 14px; font-size: 22px; font-weight: 800; background: var(--rf-surface-3); color: var(--rf-ink-3); font-variant-numeric: tabular-nums; }
+.hs-attn-tile.is-hot .n { background: var(--rf-navy); color: #fff; }
+.hs-attn-tile .l { flex: 1; min-width: 0; }
+.hs-attn-tile .l strong { display: block; font-size: 14.5px; }
+.hs-attn-tile .l small { display: block; font-size: 12.5px; color: var(--rf-ink-3); }
+.hs-attn-tile .go { color: var(--rf-ink-3); font-weight: 700; }
+.hs-attn-tile.is-hot .go { color: var(--rf-navy); }
+.hs-stat-link { text-decoration: none; color: inherit; transition: transform .2s var(--rf-ease), box-shadow .2s var(--rf-ease); }
+.hs-stat-link:hover { transform: translateY(-2px); box-shadow: var(--rf-shadow-hover); }
+
+.hs-setup-banner { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  padding: 14px 18px; margin-bottom: 18px; border-radius: 14px; background: #fff7e6; border: 1px solid #f1d9a6; color: #5c4209; }
+.hs-setup-banner.rf-hide { display: none; }
+
+.hs-setup-progress { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.hs-setup-progress strong { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+.hs-setup-progress span { color: var(--rf-ink-3); }
+.hs-setup-bar { height: 10px; margin-top: 12px; border-radius: 999px; background: var(--rf-surface-3); overflow: hidden; }
+.hs-setup-bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--rf-emerald-2), var(--rf-brass-2)); transition: width .8s var(--rf-ease); }
+.hs-setup-items { list-style: none; margin: 0; padding: 4px 20px 10px; }
+.hs-setup-items li { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--rf-line-2); }
+.hs-setup-items li:last-child { border-bottom: 0; }
+.hs-setup-dot { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; }
+.is-done .hs-setup-dot { background: var(--rf-credit-soft); color: var(--rf-credit); }
+.is-todo .hs-setup-dot { background: #fde4e1; color: #b42318; }
+.is-blocked .hs-setup-dot, .is-optional .hs-setup-dot { background: var(--rf-surface-3); color: var(--rf-ink-3); }
+.hs-setup-text { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.hs-setup-text > span { color: var(--rf-ink-2); font-size: 14px; }
+.hs-setup-fix { margin-top: 6px; padding: 10px 12px; border-radius: 10px; background: var(--rf-surface-2); border: 1px solid var(--rf-line-2); font-size: 13.5px; }
+.hs-setup-tag { flex: none; font-size: 11.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
+.is-done .hs-setup-tag { background: var(--rf-credit-soft); color: var(--rf-credit); }
+.is-todo .hs-setup-tag { background: #fde4e1; color: #b42318; }
+.is-blocked .hs-setup-tag, .is-optional .hs-setup-tag { background: var(--rf-surface-3); color: var(--rf-ink-3); }
+
+/* The find-a-customer box in the header. */
+.hs-staff-search { position: relative; width: min(420px, 42vw); }
+.hs-staff-search .rf-input { border-radius: 999px; padding-left: 16px; }
+.hs-search-results {
+  position: absolute; z-index: 60; top: calc(100% + 6px); left: 0; right: 0; max-height: 360px; overflow: auto;
+  background: #fff; border: 1px solid var(--rf-line); border-radius: 14px; box-shadow: var(--rf-shadow-lg); padding: 6px;
+}
+.hs-search-results button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: 0; background: none; text-align: left; border-radius: 10px; cursor: pointer; font: inherit; color: inherit; }
+.hs-search-results button:hover, .hs-search-results button:focus-visible { background: var(--rf-surface-3); }
+.hs-search-results strong { display: block; font-size: 14px; }
+.hs-search-results small { display: block; font-size: 12px; color: var(--rf-ink-3); }
+.hs-search-results p { margin: 8px 10px; }
+@media (max-width: 900px) {
+  .rf-shell.is-staff .rf-top { flex-wrap: wrap; }
+  .rf-shell.is-staff .rf-top-actions { order: 3; width: 100%; }
+  .hs-staff-search { width: 100%; }
+}
+
+/* ==========================================================================
+   Customer dashboard, in the Invest screen's language
+   ========================================================================== */
+
+.hs-dash-hero {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  padding: 24px 26px; border-radius: 22px; color: #fff; position: relative; overflow: hidden;
+  background: radial-gradient(120% 160% at 100% 0%, var(--rf-navy-3) 0%, var(--rf-navy) 45%, #071634 100%);
+  box-shadow: 0 24px 50px -30px rgba(11, 31, 68, .65);
+}
+.hs-dash-hero::after {
+  content: ""; position: absolute; right: -60px; top: -60px; width: 240px; height: 240px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(142, 220, 180, .28), transparent 65%); pointer-events: none;
+}
+.hs-dash-hero-main { display: grid; gap: 4px; position: relative; z-index: 1; flex: 1 1 380px; min-width: 0; }
+.hs-dash-hero .k { font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #c9d6ea; }
+.hs-dash-hero .v { font-family: var(--rf-headline); font-size: clamp(34px, 4.2vw, 48px); font-weight: 800; letter-spacing: -.01em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.hs-dash-hero .d { display: flex; align-items: center; gap: 6px 18px; flex-wrap: wrap; font-size: 14px; color: #c9d6ea; }
+.hs-dash-hero .d b { color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }
+/* Beside "Invested": the assets it is made of. The whole row opens Invest. */
+.hs-hero-inv { display: inline-flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; }
+.hs-hero-assets { display: inline-flex; flex-wrap: wrap; gap: 6px; text-decoration: none; border-radius: 999px; }
+.hs-hero-assets[hidden] { display: none; }
+.hs-hero-assets:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.hs-hero-asset {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 3px; border-radius: 999px;
+  background: rgba(255, 255, 255, .14); border: 1px solid rgba(255, 255, 255, .26);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22);
+  color: #fff; font-size: 12.5px; font-weight: 600; line-height: 1; white-space: nowrap;
+  transition: background .2s, transform .2s var(--rf-ease);
+}
+.hs-hero-asset b { font-weight: 800; font-variant-numeric: tabular-nums; }
+.hs-hero-asset .hs-logo { box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .55); }
+.hs-hero-asset.more { padding: 6px 11px; }
+.hs-hero-assets:hover .hs-hero-asset { background: rgba(255, 255, 255, .22); }
+@media (prefers-reduced-motion: no-preference) {
+  .hs-hero-assets:hover .hs-hero-asset { transform: translateY(-1px); }
+}
+.hs-qa { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 1; flex: 0 0 auto; }
+.hs-qa a {
+  display: flex; flex-direction: column; align-items: center; gap: 7px; width: 78px; text-decoration: none;
+  color: #fff; font-size: 12.5px; font-weight: 700; text-align: center;
+}
+.hs-qa i {
+  display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+  background: rgba(255, 255, 255, .14); border: 1px solid rgba(255, 255, 255, .28);
+  transition: transform .2s var(--rf-ease), background .2s;
+}
+.hs-qa a:hover i { transform: translateY(-3px); background: rgba(255, 255, 255, .24); }
+.hs-qa a:focus-visible { outline: none; }
+.hs-qa a:focus-visible i { outline: 2px solid #fff; outline-offset: 3px; }
+.hs-qa a.is-primary i { background: var(--rf-mint); color: var(--rf-navy-2); border-color: var(--rf-mint); }
+
+/* Account tiles: the whole card opens the account; Transfer and Convert sit on top. */
+.rf-acct { position: relative; }
+.hs-acct-link { position: absolute; inset: 0; border-radius: inherit; z-index: 1; }
+.hs-acct-link:focus-visible { outline: 2px solid var(--rf-navy); outline-offset: 2px; }
+.rf-acct:hover { box-shadow: var(--rf-shadow-hover); transform: translateY(-2px); }
+.rf-acct { transition: transform .2s var(--rf-ease), box-shadow .2s var(--rf-ease); }
+.hs-acct-type { font-size: 11.5px; font-weight: 700; color: var(--rf-ink-3); background: var(--rf-surface-3); padding: 3px 9px; border-radius: 999px; }
+.hs-acct-actions { position: relative; z-index: 2; display: flex; gap: 8px; margin-top: 14px; }
+.hs-acct-actions a {
+  flex: 1; text-align: center; padding: 8px 0; border-radius: 9px; font-size: 13px; font-weight: 700; text-decoration: none;
+  border: 1px solid var(--rf-line); color: var(--rf-ink); background: var(--rf-surface);
+}
+.hs-acct-actions a:hover { border-color: #8fcfb0; }
+.hs-acct-actions a.is-primary { background: var(--rf-navy-soft); border-color: var(--rf-navy-soft); color: var(--rf-navy-2); }
+.hs-acct-actions a.is-primary:hover { background: #dde5f1; }
+
+/* The invest card's top holdings. */
+.hs-dash-holdings { list-style: none; margin: 12px 0 0; padding: 0; }
+.hs-dash-holdings li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px solid var(--rf-line-2); }
+.hs-dash-holdings b { display: block; font-size: 13.5px; }
+.hs-dash-holdings em { display: block; font-style: normal; font-size: 12px; color: var(--rf-ink-3); }
+.hs-dash-holdings .v { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.hs-dash-holdings .v em.up { color: #0a7a4f; }
+.hs-dash-holdings .v em.down { color: #b42318; }
+
+@media (max-width: 720px) {
+  .hs-dash-hero { padding: 20px; border-radius: 18px; }
+  .hs-qa { width: 100%; justify-content: space-between; gap: 4px; }
+  .hs-qa a { width: auto; flex: 1; font-size: 11.5px; }
+  .hs-qa i { width: 46px; height: 46px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs-qa a:hover i, .rf-acct:hover { transform: none; }
+}
+.hs-dash-hero .hs-qa a, .hs-dash-hero .hs-qa a:visited, .hs-dash-hero .hs-qa a:hover { color: #fff; }
+.hs-dash-hero .hs-qa a i { color: #fff; }
+.hs-dash-hero .hs-qa a.is-primary i { color: var(--rf-navy-2); }
+.hs-dash-hero { border: 1px solid rgba(142, 220, 180, .28); }
+.hs-dash-hero .k { color: var(--rf-brass-2); }
+
+/* Paying another Rockfeild customer. */
+.hs-member-find { display: flex; gap: 8px; }
+.hs-member-find .rf-input { flex: 1; }
+.hs-member-card { display: flex; align-items: center; gap: 12px; margin-top: 10px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--rf-line); background: var(--rf-surface-2); font-size: 14px; color: var(--rf-ink-2); }
+.hs-member-card.is-found { border-color: #a9d9c1; background: var(--rf-credit-soft); color: var(--rf-ink); }
+.hs-member-card.is-error { border-color: #f3c7c1; background: #fdf3f1; color: #9b2c22; }
+.hs-member-card strong { display: block; }
+.hs-member-card small { display: block; color: var(--rf-ink-3); }
+.hs-member-ok { margin-left: auto; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--rf-credit); color: #fff; font-weight: 800; }
+
+/* Staff tools that open on top of the customer sheet. */
+.rf-modal-backdrop.hs-stacked { z-index: 120; }
+.hs-sheet-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 0 !important; }
+.rf-list li.is-reversed { opacity: .6; }
+.rf-list li.is-reversed strong { text-decoration: line-through; }
+
+/* ==========================================================================
+   Asset badges, the investment breakdown, and glass buttons
+   ========================================================================== */
+
+.hs-logo {
+  flex: none; display: inline-grid; place-items: center; width: var(--s, 32px); height: var(--s, 32px);
+  border-radius: 50%; font-weight: 800; letter-spacing: -.02em; line-height: 1; overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 2px 6px -2px rgba(12, 29, 74, .35);
+  font-family: var(--rf-sans);
+}
+img.hs-logo { object-fit: contain; background: #fff; padding: 2px; }
+.hs-tick .hs-logo { margin-right: 2px; }
+.hs-cell-asset { display: flex; align-items: center; gap: 10px; }
+.hs-sheet-asset .hs-logo { margin-right: 2px; }
+
+/* Dashboard: the investments card stands out. */
+.hs-dash-invest { border: 1px solid #a9d9c1; box-shadow: 0 18px 40px -26px rgba(11, 31, 68, .55); }
+.hs-dash-invest-head { background: linear-gradient(135deg, var(--rf-navy-soft) 0%, #f2faf6 100%); border-bottom-color: #cfe8db; }
+.hs-dash-invest-head h3 { display: flex; align-items: center; gap: 8px; color: var(--rf-navy-2); }
+.hs-open-invest { box-shadow: 0 8px 18px -8px rgba(11, 31, 68, .7) !important; }
+.hs-alloc { display: flex; height: 10px; border-radius: 999px; overflow: hidden; margin: 14px 0 6px; background: var(--rf-surface-3); gap: 2px; }
+.hs-alloc span { display: block; height: 100%; border-radius: 2px; transition: width .8s var(--rf-ease); }
+.hs-dash-holdings li { display: flex; align-items: center; gap: 12px; }
+.hs-dash-holdings .n { flex: 1; min-width: 0; }
+.hs-dash-holdings .n em { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hs-dash-holdings .v em.day { font-size: 11.5px; }
+
+/* Glass. Every button is a pane: a translucent face, a bright top edge where
+   the light catches, a soft shadow beneath, and whatever is behind it blurred
+   through. The face colour is still the variant's own, so contrast holds. */
+.rf-btn:not(.link) {
+  background-color: var(--btn-face);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, .04) 50%, rgba(0, 0, 0, .04) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .38), inset 0 -1px 0 rgba(0, 0, 0, .05), 0 8px 18px -12px rgba(11, 31, 68, .55);
+  -webkit-backdrop-filter: blur(14px) saturate(170%);
+  backdrop-filter: blur(14px) saturate(170%);
+}
+.rf-btn:not(.link):hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 14px 26px -14px rgba(11, 31, 68, .6); }
+.rf-btn.ghost {
+  --btn-face: rgba(255, 255, 255, .62); --btn-edge: rgba(11, 31, 68, .14);
+}
+.rf-btn.ghost:not(.link) {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .7) 0%, rgba(255, 255, 255, .25) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .95), 0 6px 16px -12px rgba(12, 29, 74, .45);
+}
+.rf-btn.ghost:hover { --btn-edge: rgba(11, 31, 68, .35); }
+
+.rf-icon-btn, .hs-chips button, .hs-acct-actions a, .hs-dash-invest .hs-chips a {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .75), rgba(255, 255, 255, .3));
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .95), 0 6px 14px -10px rgba(12, 29, 74, .4);
+}
+.hs-chips button.is-active { background-image: linear-gradient(180deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, 0)); }
+.hs-acct-actions a.is-primary, .hs-dash-invest .hs-chips a { background-color: rgba(230, 244, 238, .85); }
+.rf-segment { background: rgba(238, 240, 243, .7); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: inset 0 1px 2px rgba(12, 29, 74, .08); }
+.rf-segment button.is-active { background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, .7)); box-shadow: inset 0 1px 0 #fff, 0 4px 10px -6px rgba(12, 29, 74, .35); }
+.hs-asset-foot { gap: 6px; flex-wrap: wrap; }
+.hs-asset-foot .held { white-space: nowrap; }
+
+/* ==========================================================================
+   Rockfeild: the utility bar, the home hero, the heritage band
+   ========================================================================== */
+
+/* The thin navy strip above the nav. It scrolls away; the nav stays. */
+.rk-util { background: var(--rf-navy-2); color: #b9c6da; font-size: 12.5px; border-bottom: 1px solid rgba(142, 220, 180, .18); }
+.rk-util .inner { display: flex; align-items: center; gap: 14px; min-height: 36px; }
+.rk-util-tag { color: var(--rf-mint); font-family: var(--rf-headline); font-weight: 800; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; }
+.rk-util-sep { width: 1px; height: 14px; background: rgba(142, 220, 180, .35); }
+.rk-util-links { margin-left: auto; display: flex; gap: 20px; }
+.rf-site .rk-util a { color: #d3dceb; text-decoration: none; }
+.rf-site .rk-util a:hover { color: #fff; text-decoration: underline; text-decoration-color: var(--rf-mint); text-underline-offset: 3px; }
+
+.rf-marketing-nav { box-shadow: 0 10px 30px -26px rgba(7, 22, 52, .6); }
+.rf-marketing-nav nav a { color: var(--rf-ink-2); }
+.rf-marketing-nav nav a:hover, .rf-marketing-nav nav a.is-active { color: var(--rf-navy); }
+.rf-marketing-nav nav a::after { background: var(--rf-emerald); }
+
+/* The R's band, as broad stripes behind dark panels. */
+.rk-bands { position: absolute; z-index: -1; pointer-events: none; }
+
+/* ---- the home hero ---- */
+.rk-hero {
+  position: relative; overflow: hidden; isolation: isolate; color: #f4f6f8;
+  background: radial-gradient(90% 120% at 85% 10%, #16305e 0%, var(--rf-navy) 46%, var(--rf-navy-2) 100%);
+  padding: clamp(48px, 8vh, 96px) 0 clamp(56px, 9vh, 108px);
+  border-bottom: 4px solid var(--rf-mint);
+}
+.rk-hero .rk-bands { right: -6%; bottom: -8%; width: min(1100px, 86vw); height: auto; }
+.rk-hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
+.rk-hero .rf-eyebrow { color: var(--rf-mint); }
+.rk-hero h1 {
+  font-family: var(--rf-headline); font-weight: 800; font-size: clamp(40px, 5.4vw, 70px);
+  line-height: 1.04; letter-spacing: -.025em; color: #fff; margin: 0 0 22px; max-width: 14ch;
+}
+.rk-hero h1 em { font-style: normal; color: var(--rf-mint); }
+.rk-hero-lede { font-size: clamp(17px, 1.6vw, 19.5px); line-height: 1.6; color: #d9e2ef; max-width: 52ch; margin: 0 0 30px; }
+.rk-hero .hs-cta { box-shadow: 0 16px 34px -16px rgba(142, 220, 180, .7); }
+.rk-proof { list-style: none; padding: 0; margin: 34px 0 0; display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: 14px; color: #c9d6ea; }
+.rk-proof li { display: flex; align-items: center; gap: 8px; }
+.rk-proof svg { color: var(--rf-mint); flex: none; }
+
+/* The photograph, cut like the R's stem: the top edge rises to the right at
+   the logo's pitch, and the band passes behind it. */
+.rk-hero-media { position: relative; margin: 0; justify-self: end; width: min(100%, 460px); isolation: isolate; }
+.rk-hero-media::before, .rk-heritage-photo::before {
+  content: ""; position: absolute; z-index: -1; left: -18%; right: -18%; top: 60%; height: 64px;
+  background: linear-gradient(90deg, var(--rf-mint), #b5ecd0); transform: rotate(-29.6deg); border-radius: 2px;
+}
+.rk-hero-media::after, .rk-heritage-photo::after {
+  content: ""; position: absolute; z-index: -1; left: -18%; right: -18%; top: calc(60% + 84px); height: 18px;
+  background: var(--rf-emerald); transform: rotate(-29.6deg); border-radius: 2px;
+}
+.rk-frame {
+  position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--rf-navy-2);
+  clip-path: polygon(0 12%, 100% 0, 100% 88%, 0 100%);
+  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, .45));
+}
+.rk-frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 60% 30%; }
+.rk-float {
+  position: absolute; left: -40px; bottom: 30px; min-width: 232px; z-index: 2;
+  padding: 14px 18px; border-radius: 12px; color: var(--rf-ink);
+  background: rgba(255, 255, 255, .95); border: 1px solid rgba(255, 255, 255, .9);
+  border-left: 4px solid var(--rf-emerald);
+  box-shadow: 0 26px 50px -22px rgba(0, 0, 0, .55);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  animation: hs-float 7s ease-in-out infinite 1.4s;
+}
+.rk-float small { display: block; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--rf-ink-3); font-weight: 700; }
+.rk-float strong { display: block; font-family: var(--rf-headline); font-size: 28px; font-weight: 800; color: var(--rf-navy); margin: 3px 0 4px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.rk-float span { font-size: 12.5px; color: var(--rf-ink-3); }
+.rk-seal {
+  position: absolute; right: -14px; top: 54px; z-index: 2; display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px 8px 10px; border-radius: 999px; background: var(--rf-mint); color: var(--rf-navy-2);
+  font-weight: 700; font-size: 13px; box-shadow: 0 14px 30px -14px rgba(0, 0, 0, .55);
+}
+.rk-seal svg { width: 20px; height: 20px; }
+
+/* ---- the heritage band ---- */
+.rk-heritage {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: linear-gradient(160deg, var(--rf-navy) 0%, var(--rf-navy-2) 100%);
+  color: #e6ecf5; padding: clamp(64px, 9vw, 120px) 0;
+  border-block: 4px solid var(--rf-mint);
+}
+.rk-heritage .rk-bands { left: -10%; top: -10%; width: min(900px, 70vw); height: auto; opacity: .7; }
+.rk-heritage-grid { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(32px, 6vw, 90px); align-items: center; }
+.rk-heritage-photo { position: relative; isolation: isolate; margin: 0; width: min(100%, 420px); justify-self: center; }
+.rk-heritage-photo .rk-frame img { object-position: 64% 50%; }
+.rk-heritage .rf-eyebrow { color: var(--rf-mint); }
+.rk-heritage h2 { font-family: var(--rf-headline); font-weight: 800; font-size: clamp(30px, 3.9vw, 50px); line-height: 1.08; letter-spacing: -.02em; color: #fff; margin: 0 0 18px; }
+.rk-heritage p { color: #c9d6ea; font-size: 17px; line-height: 1.65; max-width: 56ch; margin: 0; }
+.rk-figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 36px 0 0; border-top: 1px solid rgba(142, 220, 180, .32); }
+.rk-figures div { padding: 18px 16px 0 0; }
+.rk-figures div + div { padding-left: 20px; border-left: 1px solid rgba(142, 220, 180, .2); }
+.rk-figures dt { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--rf-mint); font-weight: 700; }
+.rk-figures dd { margin: 6px 0 0; font-family: var(--rf-headline); font-size: clamp(30px, 3.2vw, 42px); font-weight: 800; letter-spacing: -.02em; color: #fff; font-variant-numeric: tabular-nums; }
+
+/* ---- headings on the remaining marketing panels ---- */
+.hs-home .hs-home-title, .hs-home h1, .hs-home-title, .hs-band h2, .hs-band-hero h1 {
+  font-family: var(--rf-headline); font-weight: 800; letter-spacing: -.025em; color: var(--rf-navy);
+}
+.hs-band h2, .hs-band-hero h1 { color: #fff; }
+.hs-kicker { color: var(--rf-brass); }
+.hs-card-h { font-family: var(--rf-headline); font-weight: 700; color: var(--rf-navy); }
+.hs-float-note i { color: var(--rf-brass); }
+.rf-product { border-top: 4px solid var(--rf-emerald); }
+.rf-product .rate { color: var(--rf-navy); font-family: var(--rf-headline); font-weight: 800; }
+.rf-feature .ic { color: var(--rf-brass); }
+.rf-stat .v, .rf-acct .bal, .rf-amt.big { font-family: var(--rf-headline); font-weight: 700; letter-spacing: -.02em; }
+
+/* ---- dark surfaces: ghost buttons need dark glass, not white ---- */
+.rf-side .rf-btn.ghost, .rf-side .rf-btn.ghost:not(.link) {
+  --btn-face: rgba(255, 255, 255, .06); --btn-edge: rgba(142, 220, 180, .4); --btn-ink: #fff;
+  background-image: none; box-shadow: none;
+}
+.rf-side .rf-btn.ghost:hover { --btn-face: rgba(255, 255, 255, .12); --btn-edge: var(--rf-mint); }
+.rf-btn.mint:not(.link) { background-image: linear-gradient(180deg, rgba(255, 255, 255, .25) 0%, rgba(255, 255, 255, 0) 60%); }
+
+@media (max-width: 1080px) {
+  .rk-util-note { display: none; }
+}
+@media (max-width: 900px) {
+  .rk-hero-grid, .rk-heritage-grid { grid-template-columns: minmax(0, 1fr); }
+  .rk-hero-media { justify-self: center; width: min(100%, 360px); margin-top: 8px; }
+  .rk-float { left: 4px; bottom: 18px; min-width: 0; }
+  .rk-seal { right: 0; top: 30px; }
+  .rk-heritage-photo { width: min(100%, 340px); }
+  .rk-hero .rk-bands { right: -40%; width: 170vw; }
+}
+@media (max-width: 620px) {
+  .rk-util-sep, .rk-util-links a:nth-child(3) { display: none; }
+  .rk-util-links { gap: 14px; }
+  .rk-figures { grid-template-columns: minmax(0, 1fr); }
+  .rk-figures div + div { padding-left: 0; border-left: 0; border-top: 1px solid rgba(142, 220, 180, .2); }
+  .rk-figures div { padding-bottom: 14px; }
+  .rk-hero .hs-actions .rf-btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rk-float { animation: none; }
+}
